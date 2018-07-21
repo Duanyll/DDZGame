@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace GameServer
 {
@@ -116,6 +117,7 @@ namespace GameServer
         public GameruleHandler()
         {
             Program.Log("已调用GameruleHandler构造函数");
+            MainThread = new Thread(Work);
         }
 
         public void Work()
@@ -240,5 +242,28 @@ namespace GameServer
         {
             throw new NotImplementedException();
         }
+
+        Thread MainThread;
+        public void StartGame()
+        {
+            MainThread.Start();
+            Program.Log("已启动主线程");
+        }
+
+        public void AbortGame()
+        {
+            MainThread.Abort();
+            Program.Log("已强制终止主线程");
+        }
+
+#if DEBUG
+        public void DoTest()
+        {
+            Program.Log("当前测试项目：Card结构");
+            Card a = new Card('B','c');
+            Program.Log(string.Format("花色：{0}，大小：{1}", a.color, a.value));
+        }
+
+#endif
     }
 }
