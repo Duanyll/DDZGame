@@ -408,55 +408,61 @@ namespace GameServer
             {
                 CalculateScore();
             }
+            Program.Log("本局结束");
         }
 
         private void AnnounceWinner(int now)
         {
-            throw new NotImplementedException();
+            Program.Log(string.Format("玩家{0}赢了",now));
         }
 
         private void AnnounceSelection(int now, Selection selection)
         {
-            throw new NotImplementedException();
+            Program.Log(string.Format("玩家{0}的出牌是:",now) + selection.ToString());
         }
 
         private void TellSelectionFail(int now)
         {
-            throw new NotImplementedException();
+            Program.Log(string.Format("玩家{0}的出牌无效",now));
         }
 
         private Selection GetSelection(int now)
         {
-            throw new NotImplementedException();
+            Program.Log(string.Format("正在等待玩家{0}出牌", now));
+            Program.Log("请输入出牌");
+            return new Selection(Console.ReadLine());
         }
 
         private void AnnounceRound(int now)
         {
-            throw new NotImplementedException();
+            Program.Log(string.Format("现在轮到玩家{0}出牌", now));
         }
 
         private void SendBaseCard()
         {
-            throw new NotImplementedException();
+            Program.Log("底牌是：" + baseCard.ToString());
         }
 
         private void CalculateScore()
         {
-            throw new NotImplementedException();
+            Program.Log("应该算分，但功能未开发");
         }
 
         private bool AskLandlord(int now)
         {
-            throw new NotImplementedException();
+            Program.Log(string.Format("询问玩家{0}是否成为地主",now));
+            Program.Log("按下y以成为地主");
+            return Console.Read() == 'y';
         }
 
         private void SendCardList(int v)
         {
-            throw new NotImplementedException();
+            Program.Log(string.Format("向玩家{0}发送手牌列表：", v) + cards[v].ToString());
         }
 
         private void CreateCards()
         {
+            Program.Log("开始洗牌");
             cards = new Selection[3];
             for (int i = 0; i <= 2; i++)
             {
@@ -479,6 +485,7 @@ namespace GameServer
             cards[2].AddRange(Full.GetRange(CARDS_PER_PERSON * 2, CARDS_PER_PERSON));
             //Debug.Assert(cards[0] is Selection);
             baseCard.AddRange(Full.GetRange(CARDS_PER_PERSON * 3, 3));
+            Program.Log("洗牌结束");
         }
 
         private void Reshuffle(ref Selection listtemp)
