@@ -100,7 +100,9 @@ namespace GameServer
         {
             public enum Type
             {
+                Null,
                 None,
+                Illegal,
                 Single,
                 Double,
                 ThreeWithOne,
@@ -109,13 +111,159 @@ namespace GameServer
                 Plane,
                 Bomb
             };
-            public Type type;
+            private Type _type = Type.Null;
             public Card.Value value;
             public int Length;
 
+            public Type type {
+                get
+                {
+                    if (_type != Type.Null)
+                    {
+                        return _type;
+                    }
+                    else
+                    {
+                        if(Count == 0)      //判断是否什么都没选
+                        {
+                            _type = Type.None;
+                            return Type.None;
+                        }
+                        if(Count == 1)      //判断是否单牌
+                        {
+                            _type = Type.Single;
+                            value = this[0].value;
+                            return Type.Single;
+                        }
+                        if(Count == 2)    
+                        {
+                            if (this[0].value == this[1].value)//判断是否对子
+                            {
+                                _type = Type.Double;
+                                value = this[0].value;
+                                return Type.Double;
+                            }
+                            if (this[0].color == Card.Color.Joker && this[1].color == Card.Color.Joker)//判断对鬼
+                            {
+                                _type = Type.Bomb;
+                                value = this[0].value;
+                                return Type.Bomb;
+                            }
+                        }
+                        if (Count == 4)
+                        {
+                            if ((this[0].value == this[1].value) && (this[1].value == this[2].value) && (this[2].value == this[3].value))//判断炸弹
+                            {
+                                _type = Type.Bomb;
+                                value = this[0].value;
+                                return Type.Bomb;
+                            }
+                            Sort();
+                            if (((this[0].value == this[1].value) && (this[1].value == this[2].value)) || ((this[1].value == this[2].value) && (this[2].value == this[3].value)))//三带一
+                            {
+                                _type = Type.ThreeWithOne;
+                                value = this[1].value;
+                                return Type.ThreeWithOne;
+                            }
+                        }
+                        if(Count >= 5)//判断顺子
+                        {
+                            Sort();
+                            bool OK = true;
+                            for(int i = 1; i < Count; i++)
+                            {
+                                if (this[i - 1].value != this[i].value + 1 && this[i].value <= Card.Value.A) 
+                                {
+                                    OK = false;
+                                    break;
+                                }
+                            }
+                            if (OK)
+                            {
+                                _type = Type.Line;
+                                Length = Count;
+                                value = this[0].value;
+                                return Type.Line;
+                            }
+                        }
+                        if (Count >= 6 && Count % 2 == 0) //判断板凳
+                        {
+                            Sort();
+                            bool OK = true;
+                            for(int i = 0; i < Count; i += 2)
+                            {
+                                if (i >= 2)
+                                {
+                                    if (this[i].value != this[i - 1].value + 1)
+                                    {
+                                        OK = false;
+                                        break;
+                                    }
+                                }
+                                if (this[i].value != this[i + 1].value)
+                                {
+                                    OK = false;
+                                    break;
+                                }
+                            }
+                            if (OK)
+                            {
+                                _type = Type.Chair;
+                                Length = Count;
+                                value = this[0].value;
+                                return Type.Chair;
+                            }
+                        }
+                        if (Count == 8)//判断飞机
+                        {
+                            int cnt = 1;
+                            //找出333444之类的结构
+                            for(int i = 1; i < Count; i++)
+                            {
+                                if (cnt == 3)
+                                {
+                                    if (this[i].value == this[i - 1].value + 1)
+                                    {
+                                        cnt++;
+                                    }
+                                    else
+                                    {
+                                        cnt = 1;
+                                    }
+                                    break;
+                                }
+                                else
+                                {
+                                    if (this[i - 1].value == this[i].value)
+                                    {
+                                        cnt++;
+                                    }
+                                    else
+                                    {
+                                        cnt = 1;
+                                    }
+                                    if (cnt == 6)
+                                    {
+                                        break;
+                                    }
+                                }
+                            }
+                            if(cnt == 6)
+                            {
+                                _type = Type.Plane;
+                                value = this[2].value;
+                                return Type.Plane;
+                            }
+                        }
+                        _type = Type.Illegal;
+                        return _type;
+                    }
+                }
+            }
+
             public Selection()
             {
-                type = Type.None;
+                
             }
 
             public Selection(string a)
@@ -141,7 +289,6 @@ namespace GameServer
             }
 
             public bool CanMatch(Selection Last)
-            
             {
                 if (type == Type.None)
                 {
