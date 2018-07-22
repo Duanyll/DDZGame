@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Diagnostics;
 
 namespace GameServer
 {
@@ -63,6 +64,11 @@ namespace GameServer
                 {
                     throw new ArgumentOutOfRangeException();
                 }
+            }
+            public Card(Color a,Value b)
+            {
+                color = a;
+                value = b;
             }
             public static bool operator ==(Card A,Card B)
             {
@@ -138,6 +144,8 @@ namespace GameServer
             }
         }
 
+        const int CARDS_PER_PERSON = 17; 
+
         Selection[] cards;
         Selection baseCard;
         Random rand = new Random();
@@ -151,7 +159,6 @@ namespace GameServer
         public void Work()
         {
             Program.Log("已开局");
-            cards = new Selection[3];
             CreateCards();
             SendCardList(0);
             SendCardList(1);
@@ -268,13 +275,42 @@ namespace GameServer
 
         private void CreateCards()
         {
-            Selection Full = new Selection();
-            for(int i = 0; i < Card.COLOR_CNT - 1; i++)
+            cards = new Selection[3];
+            for (int i = 0; i <= 2; i++)
             {
-                for(int j = 1;j<Card.VALUE_CNT - 2; j++)
+                cards[i] = new Selection();
+            }
+            baseCard = new Selection();
+            Selection Full = new Selection();
+            for(Card.Color i = Card.Color.Hongtao; i <= Card.Color.Meihua; i++)
+            {
+                for(Card.Value j = Card.Value.Three; j <= Card.Value.Two; j++)
                 {
-
+                    Full.Add(new Card(i, j));
                 }
+            }
+            Full.Add(new Card(Card.Color.Joker, Card.Value.Grey));
+            Full.Add(new Card(Card.Color.Joker, Card.Value.Red));
+            Reshuffle(ref Full);
+            cards[0].AddRange(Full.GetRange(0, CARDS_PER_PERSON));
+            cards[1].AddRange(Full.GetRange(CARDS_PER_PERSON, CARDS_PER_PERSON));
+            cards[2].AddRange(Full.GetRange(CARDS_PER_PERSON * 2, CARDS_PER_PERSON));
+            //Debug.Assert(cards[0] is Selection);
+            baseCard.AddRange(Full.GetRange(CARDS_PER_PERSON * 3, 3));
+        }
+
+        private void Reshuffle(ref Selection listtemp)
+        {
+            //随机交换
+            Random ram = new Random();
+            int currentIndex;
+            Card tempValue;
+            for (int i = 0; i < listtemp.Count; i++)
+            {
+                currentIndex = ram.Next(0, listtemp.Count - i);
+                tempValue = listtemp[currentIndex];
+                listtemp[currentIndex] = listtemp[listtemp.Count - 1 - i];
+                listtemp[listtemp.Count - 1 - i] = tempValue;
             }
         }
 
@@ -301,6 +337,13 @@ namespace GameServer
             //Program.Log(Convert.ToString(a < b));
             //Card c = new Card('F', 'z');
             //Program.Log(string.Format("花色：{0}，大小：{1}", c.color, c.value));
+
+            Program.Log("测试洗牌程序");
+            CreateCards();
+            Program.Log(cards[0].ToString());
+            Program.Log(cards[1].ToString());
+            Program.Log(cards[2].ToString());
+            Program.Log(baseCard.ToString());
         }
 
 #endif
