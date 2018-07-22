@@ -110,6 +110,8 @@ namespace GameServer
                 Bomb
             };
             public Type type;
+            public Card.Value value;
+            public int Length;
 
             public Selection()
             {
@@ -139,8 +141,14 @@ namespace GameServer
             }
 
             public bool CanMatch(Selection Last)
+            
             {
-                throw new NotImplementedException();
+                if (type == Type.None)
+                {
+                    return true;
+                }
+
+
             }
         }
 
@@ -190,8 +198,8 @@ namespace GameServer
                     AnnounceRound(now);
                     SendCardList(now);
                     Selection selection = GetSelection(now);
-                    AnnounceSelection(now, selection);
-                    while ((!((now != Owner) && selection.type == Selection.Type.None)) && !selection.CanMatch(Last))
+                    while ((((now == Owner) && selection.type == Selection.Type.None)) || !selection.CanMatch(Last))
+                        //当前出牌不能过
                     {
                         TellSelectionFail(now);
                         selection = GetSelection(now);
@@ -199,6 +207,7 @@ namespace GameServer
                     if (selection.type != Selection.Type.None)
                     {
                         Last = selection;
+                        Owner = now;
                     }
                     AnnounceSelection(now, selection);
                     for(int i = 0; i < cards[now].Count; i++)
