@@ -11,6 +11,9 @@ namespace GameServer
     {
         private struct Card
         {
+            public const int COLOR_CNT = 5;
+            public const int VALUE_CNT = 14;
+
             public enum Color
             {
                 Hongtao,
@@ -51,7 +54,15 @@ namespace GameServer
             public Card(char col,char val)
             {
                 color = (Color)(col - 'A');
+                if ((int)color > COLOR_CNT)
+                {
+                    throw new ArgumentOutOfRangeException();
+                }
                 value = (Value)(val - 'a');
+                if ((int)value > VALUE_CNT)
+                {
+                    throw new ArgumentOutOfRangeException();
+                }
             }
             public static bool operator ==(Card A,Card B)
             {
@@ -101,7 +112,24 @@ namespace GameServer
 
             public Selection(string a)
             {
-                throw new NotImplementedException();
+                if (a.Length % 2 != 0)
+                {
+                    throw new FormatException();                                            
+                }
+                for(int i = 0; i < a.Length; i += 2)
+                {
+                    Add(new Card(a[i], a[i + 1]));
+                }
+            }
+
+            public override string ToString()
+            {
+                string ans = "";
+                foreach(Card i in this)
+                {
+                    ans += i.ToString();
+                }
+                return ans;
             }
 
             public bool CanMatch(Selection Last)
@@ -110,8 +138,8 @@ namespace GameServer
             }
         }
 
-        List<Card>[] cards;
-        List<Card> baseCard;
+        Selection[] cards;
+        Selection baseCard;
         Random rand = new Random();
 
         public GameruleHandler()
@@ -123,7 +151,7 @@ namespace GameServer
         public void Work()
         {
             Program.Log("已开局");
-            cards = new List<Card>[3];
+            cards = new Selection[3];
             CreateCards();
             SendCardList(0);
             SendCardList(1);
@@ -240,7 +268,14 @@ namespace GameServer
 
         private void CreateCards()
         {
-            throw new NotImplementedException();
+            Selection Full = new Selection();
+            for(int i = 0; i < Card.COLOR_CNT - 1; i++)
+            {
+                for(int j = 1;j<Card.VALUE_CNT - 2; j++)
+                {
+
+                }
+            }
         }
 
         Thread MainThread;
@@ -259,9 +294,13 @@ namespace GameServer
 #if DEBUG
         public void DoTest()
         {
-            Program.Log("当前测试项目：Card结构");
-            Card a = new Card('B','c');
-            Program.Log(string.Format("花色：{0}，大小：{1}", a.color, a.value));
+            //Program.Log("当前测试项目：Card结构");
+            //Card a = new Card('B', 'c');
+            //Program.Log(string.Format("花色：{0}，大小：{1}", a.color, a.value));
+            //Card b = new Card('C', 'e');
+            //Program.Log(Convert.ToString(a < b));
+            //Card c = new Card('F', 'z');
+            //Program.Log(string.Format("花色：{0}，大小：{1}", c.color, c.value));
         }
 
 #endif
