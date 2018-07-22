@@ -10,7 +10,7 @@ namespace GameServer
 {
     class GameruleHandler
     {
-        private struct Card
+        private struct Card:IComparable
         {
             public const int COLOR_CNT = 5;
             public const int VALUE_CNT = 14;
@@ -72,7 +72,7 @@ namespace GameServer
             }
             public static bool operator ==(Card A,Card B)
             {
-                return A.value == B.value;
+                return A.Equals(B);
             }
             public static bool operator !=(Card A,Card B)
             {
@@ -93,6 +93,16 @@ namespace GameServer
             public static bool operator <=(Card A,Card B)
             {
                 return !(A > B);
+            }
+            public int CompareTo(object obj)
+            {
+                if (obj == null) return 1;
+                Card otherCard = (Card)obj;
+                if (otherCard == null)
+                    throw new ArgumentNullException();
+                else
+                    return this.value.CompareTo(otherCard.value);
+
             }
         }
 
@@ -172,7 +182,7 @@ namespace GameServer
                             bool OK = true;
                             for(int i = 1; i < Count; i++)
                             {
-                                if (this[i - 1].value != this[i].value + 1 && this[i].value <= Card.Value.A) 
+                                if (this[i - 1].value != this[i].value - 1 || this[i].value > Card.Value.A) 
                                 {
                                     OK = false;
                                     break;
@@ -192,6 +202,11 @@ namespace GameServer
                             bool OK = true;
                             for(int i = 0; i < Count; i += 2)
                             {
+                                if(this[i].value > Card.Value.A)
+                                {
+                                    OK = false;
+                                    break;
+                                }
                                 if (i >= 2)
                                 {
                                     if (this[i].value != this[i - 1].value + 1)
@@ -216,6 +231,7 @@ namespace GameServer
                         }
                         if (Count == 8)//判断飞机
                         {
+                            //Sort();(之前肯定排过了）
                             int cnt = 1;
                             //找出333444之类的结构
                             for(int i = 1; i < Count; i++)
@@ -230,7 +246,6 @@ namespace GameServer
                                     {
                                         cnt = 1;
                                     }
-                                    break;
                                 }
                                 else
                                 {
@@ -294,8 +309,7 @@ namespace GameServer
                 {
                     return true;
                 }
-
-
+                throw new NotImplementedException();
             }
         }
 
@@ -494,14 +508,17 @@ namespace GameServer
             //Card c = new Card('F', 'z');
             //Program.Log(string.Format("花色：{0}，大小：{1}", c.color, c.value));
 
-            Program.Log("测试洗牌程序");
-            CreateCards();
-            Program.Log(cards[0].ToString());
-            Program.Log(cards[1].ToString());
-            Program.Log(cards[2].ToString());
-            Program.Log(baseCard.ToString());
-        }
+            //Program.Log("测试洗牌程序");
+            //CreateCards();
+            //Program.Log(cards[0].ToString());
+            //Program.Log(cards[1].ToString());
+            //Program.Log(cards[2].ToString());
+            //Program.Log(baseCard.ToString());
 
+            Program.Log("测试牌型判断");
+            Selection a = new Selection(Console.ReadLine());
+            Program.Log(a.type.ToString());
+        }
 #endif
     }
 }
