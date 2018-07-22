@@ -10,7 +10,7 @@ namespace GameServer
     {
         public static void Log(string a)
         {
-            Console.WriteLine(a);
+            Console.WriteLine(DateTime.Now + " " + a);
         }
 
         static GameruleHandler handler;
@@ -30,7 +30,7 @@ namespace GameServer
                 handler = new GameruleHandler();
 
 #if DEBUG
-                Log("受编译选项控制，当前处于调试模式");
+                Log("受编译选项控制，当前处于测试模式");
                 handler.DoTest();
 #else
                 handler.StartGame();

@@ -278,7 +278,7 @@ namespace GameServer
 
             public Selection()
             {
-                
+                _type = Type.None;
             }
 
             public Selection(string a)
@@ -305,11 +305,23 @@ namespace GameServer
 
             public bool CanMatch(Selection Last)
             {
-                if (type == Type.None)
+                if (type == Type.None||Last.type == Type.None)
                 {
                     return true;
                 }
-                throw new NotImplementedException();
+                if (type == Type.Illegal||type == Type.Null)
+                {
+                    return false;
+                }
+                if(type == Type.Bomb && Last.type != Type.Bomb)
+                {
+                    return true;
+                }
+                if (!(type == Type.Line)||(type == Type.Chair)&&type == Last.type)
+                {
+                    return value > Last.value;
+                }
+                return type == Last.type && Length == Last.Length && value > Last.value;
             }
         }
 
@@ -515,9 +527,17 @@ namespace GameServer
             //Program.Log(cards[2].ToString());
             //Program.Log(baseCard.ToString());
 
-            Program.Log("测试牌型判断");
-            Selection a = new Selection(Console.ReadLine());
-            Program.Log(a.type.ToString());
+            //Program.Log("测试牌型判断");
+            //Selection a = new Selection(Console.ReadLine());
+            //Program.Log(a.type.ToString());
+
+            Program.Log("测试大小比较");
+            while (true)
+            {
+                Selection a = new Selection(Console.ReadLine());
+                Selection b = new Selection(Console.ReadLine());
+                Program.Log(b.CanMatch(a).ToString());
+            }
         }
 #endif
     }
