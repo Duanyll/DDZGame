@@ -337,14 +337,27 @@ namespace GameServer
             MainThread = new Thread(Work);
         }
 
+        bool IsSubSet(Selection a,Selection b)
+        {
+            foreach (var i in a)
+            {
+                if (!b.Contains(i))
+                    return false;
+            }
+            return true;
+        }
+
         public void Work()
         {
             Program.Log("已开局");
             CreateCards();
+            cards[0].Sort();
+            cards[1].Sort();
+            cards[2].Sort();
             SendCardList(0);
             SendCardList(1);
             SendCardList(2);
-            int now = rand.Next(2);
+            int now = rand.Next(3);
             bool LandlordSelected = false;
             for(int i = 1; i <= 3; i++)
             {
@@ -363,6 +376,7 @@ namespace GameServer
             {
                 Program.Log(String.Format("{0}号玩家是地主", now));
                 cards[now].AddRange(baseCard);
+                cards[now].Sort();
                 SendBaseCard();
                 Selection Last = new Selection();
                 int Owner = now;
@@ -371,8 +385,7 @@ namespace GameServer
                     AnnounceRound(now);
                     SendCardList(now);
                     Selection selection = GetSelection(now);
-                    while ((((now == Owner) && selection.type == Selection.Type.None)) || !selection.CanMatch(Last))
-                        //当前出牌不能过
+                    while (!SelectionOK(now, Last, Owner, selection))
                     {
                         TellSelectionFail(now);
                         selection = GetSelection(now);
@@ -383,13 +396,9 @@ namespace GameServer
                         Owner = now;
                     }
                     AnnounceSelection(now, selection);
-                    for(int i = 0; i < cards[now].Count; i++)
+                    foreach (Card i in selection)
                     {
-                        if (selection.Contains(cards[now][i]))
-                        {
-                            cards[i].RemoveAt(i);
-                            i--;
-                        }
+                        cards[now].Remove(i);
                     }
                     if (cards[now].Count == 0)
                     {
@@ -409,6 +418,25 @@ namespace GameServer
                 CalculateScore();
             }
             Program.Log("本局结束");
+        }
+
+        private bool SelectionOK(int now, Selection Last, int Owner, Selection selection)
+        {
+            if (!IsSubSet(selection, cards[now]))
+            {
+                return false;
+            }
+            else
+            {
+                if(now == Owner)
+                {
+                    return selection.type != Selection.Type.None;
+                }
+                else
+                {
+                    return selection.CanMatch(Last);
+                }
+            }
         }
 
         private void AnnounceWinner(int now)
@@ -451,8 +479,7 @@ namespace GameServer
         private bool AskLandlord(int now)
         {
             Program.Log(string.Format("询问玩家{0}是否成为地主",now));
-            Program.Log("按下y以成为地主");
-            return Console.Read() == 'y';
+            return System.Windows.Forms.MessageBox.Show("是否成为地主？", "提示", System.Windows.Forms.MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes;
         }
 
         private void SendCardList(int v)
@@ -538,13 +565,16 @@ namespace GameServer
             //Selection a = new Selection(Console.ReadLine());
             //Program.Log(a.type.ToString());
 
-            Program.Log("测试大小比较");
-            while (true)
-            {
-                Selection a = new Selection(Console.ReadLine());
-                Selection b = new Selection(Console.ReadLine());
-                Program.Log(b.CanMatch(a).ToString());
-            }
+            //Program.Log("测试大小比较");
+            //while (true)
+            //{
+            //    Selection a = new Selection(Console.ReadLine());
+            //    Selection b = new Selection(Console.ReadLine());
+            //    Program.Log(b.CanMatch(a).ToString());
+            //}
+
+            Program.Log("测试游戏逻辑");
+            StartGame();
         }
 #endif
     }
