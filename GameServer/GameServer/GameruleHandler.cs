@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Diagnostics;
+using NetServer;
 
 namespace GameServer
 {
@@ -330,6 +331,7 @@ namespace GameServer
         Selection[] cards;
         Selection baseCard;
         Random rand = new Random();
+        NetServer.NetServer server = new NetServer.NetServer();
 
         public GameruleHandler()
         {
@@ -573,8 +575,11 @@ namespace GameServer
             //    Program.Log(b.CanMatch(a).ToString());
             //}
 
-            Program.Log("测试游戏逻辑");
-            StartGame();
+            //Program.Log("测试游戏逻辑");
+            //StartGame();
+
+            Program.Log("测试服务器");
+            server.StartService();
         }
 #endif
     }
