@@ -16,23 +16,13 @@ using System.Windows.Shapes;
 namespace GameClient
 {
     /// <summary>
-    /// CardView.xaml 的交互逻辑
+    /// MidCardView.xaml 的交互逻辑
     /// </summary>
-    public partial class CardView : UserControl
+    public partial class MidCardView : UserControl
     {
-        public CardView()
+        public MidCardView()
         {
             InitializeComponent();
-        }
-
-        private void Card_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            ChkBox.IsChecked = !ChkBox.IsChecked;
-        }
-
-        private void ChkBox_Checked(object sender, RoutedEventArgs e)
-        {
-
         }
     }
 }

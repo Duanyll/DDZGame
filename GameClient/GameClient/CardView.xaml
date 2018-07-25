@@ -6,13 +6,17 @@
              xmlns:local="clr-namespace:GameClient"
              mc:Ignorable="d" 
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             d:DesignHeight="230" d:DesignWidth="150">
+             d:DesignHeight="150" d:DesignWidth="100" Width="120" Height="180">
     <Grid>
         <materialDesign:Card Margin="4" VerticalAlignment="Stretch" MouseDown="Card_MouseDown">
             <Grid>
-                <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" Text="♣" VerticalAlignment="Center" Width="134" FontFamily="Segoe UI Emoji" FontSize="72" TextAlignment="Center"/>
-                <TextBlock Margin="0,10,10,0" Height="49" VerticalAlignment="Top" HorizontalAlignment="Right" Width="53" Text="10" FontSize="36" TextAlignment="Center" FontFamily="Microsoft YaHei UI Light"/>
-                <CheckBox x:Name="ChkBox" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,197,0,0"/>
+                <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" Text="♥" VerticalAlignment="Center" Width="64" FontFamily="Segoe UI Emoji" FontSize="48" TextAlignment="Center" Margin="10,35,10,35.4">
+                    <TextBlock.Foreground>
+                        <SolidColorBrush Color="Red"/>
+                    </TextBlock.Foreground>
+                </TextBlock>
+                <TextBlock Margin="0,10,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Text="J" FontSize="36" TextAlignment="Center" FontFamily="Microsoft YaHei UI Light" Foreground="#FFFF0202"/>
+                <CheckBox x:Name="ChkBox" HorizontalAlignment="Left" Margin="3,0,0,5" Height="20" VerticalAlignment="Bottom"/>
             </Grid>
         </materialDesign:Card>
     </Grid>
