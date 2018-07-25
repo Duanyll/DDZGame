@@ -6,12 +6,12 @@
              xmlns:local="clr-namespace:GameClient"
              mc:Ignorable="d" 
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             d:DesignHeight="150" d:DesignWidth="100">
+             d:DesignHeight="120" d:DesignWidth="80" MinHeight="120" MinWidth="80">
     <Grid>
         <materialDesign:Card Margin="0,0,0,0" VerticalAlignment="Stretch">
             <Grid>
-                <TextBlock HorizontalAlignment="Center" Margin="0,0,0,0" TextWrapping="Wrap" Text="♠" VerticalAlignment="Center" FontSize="48"/>
-                <TextBlock Margin="0,10,10,0" HorizontalAlignment="Right" VerticalAlignment="Top" FontFamily="Microsoft YaHei UI Light" FontSize="24">9</TextBlock>
+                <TextBlock x:Name="TBColor" HorizontalAlignment="Center" Margin="0,0,0,0" TextWrapping="Wrap" Text="♠" VerticalAlignment="Center" FontSize="48"/>
+                <TextBlock x:Name="TBValue" Margin="0,10,10,0" HorizontalAlignment="Right" VerticalAlignment="Top" FontFamily="Microsoft YaHei UI Light" FontSize="24">9</TextBlock>
             </Grid>
         </materialDesign:Card>
 

@@ -23,11 +23,35 @@ namespace GameClient
         public MainWindow()
         {
             InitializeComponent();
+            snakebar.MessageQueue = new MaterialDesignThemes.Wpf.SnackbarMessageQueue();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void BtnSendChat_Click(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(TBChat.Text))
+            {
+                AddToChatBox(TBChat.Text);
+                TBChat.Clear();
+            }
+            else
+            {
+                snakebar.MessageQueue.Enqueue("Please enter content to send.");
+            }
+            
+        }
+
+        private void AddToChatBox(string a)
+        {
+            ICChat.Items.Add(new TextBlock
+            {
+                Text = a,
+                TextWrapping = TextWrapping.Wrap
+            });
         }
     }
 }

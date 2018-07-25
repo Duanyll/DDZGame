@@ -25,9 +25,137 @@ namespace GameClient
             InitializeComponent();
         }
 
+        public const int COLOR_CNT = 5;
+        public const int VALUE_CNT = 14;
+
+        public enum Color
+        {
+            Hongtao,
+            Fangpian,
+            Heitao,
+            Meihua,
+            Joker
+        };
+        public Color color;
+        public enum Value
+        {
+            Three,
+            Four,
+            Five,
+            Six,
+            Seven,
+            Eight,
+            Nine,
+            Ten,
+            J,
+            Q,
+            K,
+            A,
+            Two,
+            Grey,
+            Red
+        }
+        public Value value;
+        public override string ToString()
+        {
+            string ret = "";
+            char col = (char)('A' + (int)color);
+            ret += col;
+            char val = (char)('a' + (int)value);
+            ret += val;
+            return ret;
+        }
+        public CardView(char col, char val)
+        {
+            InitializeComponent();
+            color = (Color)(col - 'A');
+            if ((int)color > COLOR_CNT)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+            value = (Value)(val - 'a');
+            if ((int)value > VALUE_CNT)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+            SetColor();
+        }
+        public CardView(Color a, Value b)
+        {
+            InitializeComponent();
+            color = a;
+            value = b;
+            SetColor();
+        }
+
+        private void SetColor()
+        {
+            switch (color)
+            {
+                case Color.Fangpian:
+                    TBColor.Text = "♦";
+                    TBColor.Foreground = Brushes.Red;
+                    TBValue.Foreground = Brushes.Red;
+                    break;
+                case Color.Heitao:
+                    TBColor.Text = "♠";
+                    TBColor.Foreground = Brushes.Black;
+                    TBValue.Foreground = Brushes.Black;
+                    break;
+                case Color.Hongtao:
+                    TBColor.Text = "♥";
+                    TBColor.Foreground = Brushes.Red;
+                    TBValue.Foreground = Brushes.Red;
+                    break;
+                case Color.Meihua:
+                    TBColor.Text = "♣";
+                    TBColor.Foreground = Brushes.Black;
+                    TBValue.Foreground = Brushes.Black;
+                    break;
+                case Color.Joker:
+                    TBColor.Text = "♛";
+                    break;
+            }
+            if (value <= Value.Ten)
+            {
+                TBValue.Text = ((int)value).ToString()+3;
+            }
+            else
+            {
+                switch (value)
+                {
+                    case Value.J:
+                        TBValue.Text = "J";
+                        break;
+                    case Value.Q:
+                        TBValue.Text = "Q";
+                        break;
+                    case Value.K:
+                        TBValue.Text = "K";
+                        break;
+                    case Value.A:
+                        TBValue.Text = "A";
+                        break;
+                    case Value.Two:
+                        TBValue.Text = "2";
+                        break;
+                    case Value.Grey:
+                        TBValue.Text = "Joker";
+                        TBValue.Foreground = Brushes.Black;
+                        TBColor.Foreground = Brushes.Black;
+                        break;
+                    case Value.Red:
+                        TBValue.Text = "Joker";
+                        TBValue.Foreground = Brushes.Red;
+                        TBColor.Foreground = Brushes.Red;
+                        break;
+                }
+            }
+        }
+
         private void Card_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            ChkBox.IsChecked = !ChkBox.IsChecked;
+            
         }
 
         private void ChkBox_Checked(object sender, RoutedEventArgs e)
