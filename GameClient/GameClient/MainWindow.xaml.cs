@@ -20,15 +20,13 @@ namespace GameClient
     /// </summary>
     public partial class MainWindow : Window
     {
+        NetClient.NetworkClient client = new NetClient.NetworkClient();
         public MainWindow()
         {
             InitializeComponent();
             snakebar.MessageQueue = new MaterialDesignThemes.Wpf.SnackbarMessageQueue();
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-
+            client.FailureCaused += NetWorkFailure;
+            client.MessageRecieved += MsgRecieved;
         }
 
         private void BtnSendChat_Click(object sender, RoutedEventArgs e)
@@ -39,15 +37,41 @@ namespace GameClient
                 DoTest();
                 return;
             }
+            string[] vs = TBChat.Text.Split(' ');
+            if (vs.Count() == 3 && vs[0] == "$connect$")
+            {
+                client.Connect(vs[1], vs[2]);
+                return;
+            }
+            if (vs.Count() == 1 && vs[0] == "$stop$")
+            {
+                client.Stop();
+                return;
+            }
+            if (vs.Count()>1 && vs[0] == "$send$")
+            {
+                client.SendMessage(vs[1]);
+                return;
+            }
+            if (vs.Count()>1 && vs[0] == "$recv$")
+            {
+                MsgRecieved(vs[1]);
+                return;
+            }
 #endif
             if (!string.IsNullOrWhiteSpace(TBChat.Text))
             {
-                AddToChatBox(TBChat.Text);
+                if (TBChat.Text.Contains("|")||TBChat.Text.Contains(":")||TBChat.Text.Contains("$"))
+                {
+                    snakebar.MessageQueue.Enqueue("包含非法字符");
+                    return;
+                }
+                client.SendMessage("CHAT|" + TBChat.Text);
                 TBChat.Clear();
             }
             else
             {
-                snakebar.MessageQueue.Enqueue("Please enter content to send.");
+                snakebar.MessageQueue.Enqueue("请输入要发送的内容");
             }
             
         }
@@ -84,6 +108,96 @@ namespace GameClient
                 Text = a,
                 TextWrapping = TextWrapping.Wrap
             });
+        }
+
+        private void NetWorkFailure(string msg)
+        {
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                snakebar.MessageQueue.Enqueue(msg);
+            })); 
+        }
+
+        private void MsgRecieved(string msg)
+        {
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                string[] vs = msg.Split(':');
+                if (vs.Count() > 1)
+                {
+                    msg = msg.Split('|')[1];
+                    ICChat.Items.Add(new TextBlock
+                    {
+                        Text = DateTime.Now.ToString(),
+                        Foreground = Brushes.DarkGray,
+                        TextWrapping = TextWrapping.Wrap
+                    });
+                    ICChat.Items.Add(new TextBlock
+                    {
+                        Text = msg,
+                        TextWrapping = TextWrapping.Wrap
+                    });
+                }
+                vs = msg.Split('|');
+                switch (vs[0])
+                {
+                    case "COWN":
+                        if (vs[1].Length % 2 != 0)
+                        {
+                            NetWorkFailure("收到非法内容");
+                            return;
+                        }
+                        LVCardOwn.Items.Clear();
+                        for(int i = 0; i < vs[1].Length; i+=2)
+                        {
+                            LVCardOwn.Items.Add(new CardView(vs[1][i], vs[1][i + 1]));
+                        }
+                        break;
+                    case "CLST":
+                        if (vs[1].Length % 2 != 0)
+                        {
+                            NetWorkFailure("收到非法内容");
+                            return;
+                        }
+                        LVCardLast.Items.Clear();
+                        for (int i = 0; i < vs[1].Length; i+=2)
+                        {
+                            LVCardLast.Items.Add(new MidCardView(vs[1][i], vs[1][i + 1]));
+                        }
+                        break;
+                }
+            }));
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            client.Stop();
+        }
+
+        private void LVCardOwn_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(LVCardOwn.SelectedItems.Count == 0)
+            {
+                PIBtnSend.Kind = MaterialDesignThemes.Wpf.PackIconKind.SkipNext;
+            }
+            else
+            {
+                PIBtnSend.Kind = MaterialDesignThemes.Wpf.PackIconKind.Send;
+            }
+        }
+
+        private void BtnSendCard_Click(object sender, RoutedEventArgs e)
+        {
+            string sel = "";
+            foreach(object i in LVCardOwn.SelectedItems)
+            {
+                CardView card = i as CardView;
+                if(card != null)
+                {
+                    sel += card.ToString();
+                }
+            }
+            client.SendMessage("SLCT|" + sel);
         }
     }
 }

@@ -412,17 +412,16 @@ namespace NetServer
                             dataFromClient = dataFromClient.Substring(0, dataFromClient.LastIndexOf("$"));   //这里的dataFromClient是消息内容，上面的是用户名
                             if (!String.IsNullOrWhiteSpace(dataFromClient))
                             {
+
                                 BroadCast.PushMessage(dataFromClient, clNo, true, clientList);
-                                msgTemp = clNo + ":" + dataFromClient + "\t\t" + DateTime.Now.ToString();
-                                String newMsg = msgTemp;
-                                //File.AppendAllText("E:\\MessageRecords.txt", newMsg + "\r\n", Encoding.UTF8);
+                                
                             }
                             else
                             {
                                 isListen = false;
                                 clientList.Remove(clNo);
 
-                                Console.WriteLine(clNo + "已断开与服务器连接\r" + DateTime.Now);
+                                Console.WriteLine(clNo + "已断开与服务器连接\r");
                                 BroadCast.PushMessage(clNo + "已下线\r", "", false, clientList);
                                 clientSocket.Close();
                                 clientSocket = null;
@@ -461,12 +460,12 @@ namespace NetServer
                 Byte[] castBytes = new Byte[4096];
                 if (flag == true)
                 {
-                    msgTemp = uName + ":" + msg + "\t\t" + DateTime.Now.ToString();
+                    msgTemp = uName + ":" + msg;
                     castBytes = Encoding.UTF8.GetBytes(msgTemp);
                 }
                 else
                 {
-                    msgTemp = msg + "\t\t" + DateTime.Now.ToString();
+                    msgTemp = msg;
                     castBytes = Encoding.UTF8.GetBytes(msgTemp);
                 }
                 try
