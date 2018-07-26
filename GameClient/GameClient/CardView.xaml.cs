@@ -118,7 +118,7 @@ namespace GameClient
             }
             if (value <= Value.Ten)
             {
-                TBValue.Text = ((int)value).ToString()+3;
+                TBValue.Text = ((int)value+3).ToString();
             }
             else
             {
