@@ -24,6 +24,14 @@ namespace NetServer
         //将endpoint设置为成员字段
         IPEndPoint endPoint;
 
+        public delegate void UserLogin(string UserName);
+        public delegate void UserLogout(string UserName);
+        public delegate void RecievedMessage(string UserName, string msg);
+
+        public event UserLogin UserLoggedIn;
+        public event UserLogout UserLoggedOut;
+        public event RecievedMessage MessageRecieved;
+
         public NetServer()
         {
             ipadr = IPAddress.Loopback;
@@ -216,15 +224,17 @@ namespace NetServer
 
                                     //BroadCast是下面自己定义的一个类，是用来将消息对所有用户进行推送的
                                     //PushMessage(String msg, String uName, Boolean flag, Dictionary<String, Socket> clientList)
-                                    BroadCast.PushMessage(dataFromClient + "Joined", dataFromClient, false, clientList);
+                                    UserLoggedIn(dataFromClient);
 
                                     //HandleClient也是一个自己定义的类，用来负责接收客户端发来的消息并转发给所有的客户端
                                     //StartClient(Socket inClientSocket, String clientNo, Dictionary<String, Socket> cList)
                                     HandleClient client = new HandleClient();
+                                    client.MessageRecieved += RecMsg;
+                                    client.UserLoggedOut += ULogout;
 
                                     client.StartClient(clientSocket, dataFromClient, clientList);
 
-                                    Log(dataFromClient + "连接上了服务器\r" + DateTime.Now + "\r\n");
+                                    Log(dataFromClient + "连接上了服务器");
                                 }
                                 else
                                 {
@@ -246,9 +256,15 @@ namespace NetServer
 
         }
 
+        private void RecMsg(string clno,string msg)
+        {
+            MessageRecieved(clno, msg);
+        }
 
-
-
+        private void ULogout(string clno)
+        {
+            UserLoggedOut(clno);
+        }
 
 
 
@@ -273,7 +289,7 @@ namespace NetServer
             }
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void Form1_Load()
         {
             try
             {
@@ -315,7 +331,7 @@ namespace NetServer
         }
 
         //重置监听的IP地址
-        private void btnResetIp_Click(string txtIP)
+        private void ResetIP(string txtIP)
         {
 
             //如果txtIP里面有值，就选择填入的IP作为服务器IP，不填的话就默认是本机的
@@ -344,7 +360,7 @@ namespace NetServer
 
         }
 
-        public void Reset(object sender, EventArgs e)
+        public void Reset()
         {
             if (ipadr == IPAddress.Loopback)
             {
@@ -353,7 +369,7 @@ namespace NetServer
             else
             {
                 ipadr = IPAddress.Loopback;
-                btnStop_Click(sender, e);
+                StopService();
                 Log("服务器重启中，请稍候...\r\n");
 
                 StartService();
@@ -373,6 +389,13 @@ namespace NetServer
         Dictionary<String, Socket> clientList = new Dictionary<string, Socket>();
         public HandleClient() { }
 
+        //public delegate void UserLogin(string UserName);
+        public delegate void UserLogout(string UserName);
+        public delegate void RecievedMessage(string UserName, string msg);
+
+        //public event UserLogin UserLoggedIn;
+        public event UserLogout UserLoggedOut;
+        public event RecievedMessage MessageRecieved;
 
         public void StartClient(Socket inClientSocket, String clientNo, Dictionary<String, Socket> cList)
         {
@@ -412,15 +435,16 @@ namespace NetServer
                             dataFromClient = dataFromClient.Substring(0, dataFromClient.LastIndexOf("$"));   //这里的dataFromClient是消息内容，上面的是用户名
                             if (!String.IsNullOrWhiteSpace(dataFromClient))
                             {
-
-                                BroadCast.PushMessage(dataFromClient, clNo, true, clientList);
+                                //丧心病狂，只能把事件二级传出去
+                                MessageRecieved(clNo, dataFromClient);
+                                //BroadCast.PushMessage(dataFromClient, clNo, true, clientList);
                                 Console.WriteLine(clNo + ":" + dataFromClient);
                             }
                             else
                             {
                                 isListen = false;
                                 clientList.Remove(clNo);
-
+                                UserLoggedOut(clNo);
                                 Console.WriteLine(clNo + "已断开与服务器连接\r");
                                 BroadCast.PushMessage(clNo + "已下线\r", "", false, clientList);
                                 clientSocket.Close();
