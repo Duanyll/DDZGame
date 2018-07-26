@@ -414,7 +414,7 @@ namespace NetServer
                             {
 
                                 BroadCast.PushMessage(dataFromClient, clNo, true, clientList);
-                                
+                                Console.WriteLine(clNo + ":" + dataFromClient);
                             }
                             else
                             {

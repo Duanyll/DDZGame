@@ -21,6 +21,8 @@ namespace GameClient
     public partial class MainWindow : Window
     {
         NetClient.NetworkClient client = new NetClient.NetworkClient();
+        int MyID = -1;
+        string UserName;
         public MainWindow()
         {
             InitializeComponent();
@@ -40,6 +42,7 @@ namespace GameClient
             string[] vs = TBChat.Text.Split(' ');
             if (vs.Count() == 3 && vs[0] == "$connect$")
             {
+                UserName = vs[1];
                 client.Connect(vs[1], vs[2]);
                 return;
             }
@@ -165,6 +168,18 @@ namespace GameClient
                             LVCardLast.Items.Add(new MidCardView(vs[1][i], vs[1][i + 1]));
                         }
                         break;
+                    case "NPLR":
+                        SetNowPlayer(int.Parse(vs[1]));
+                        break;
+                    case "PWIN":
+                        snakebar.MessageQueue.Enqueue(vs[1] + "赢了");
+                        break;
+                    case "GCRD":
+                        if (vs[1] == UserName)
+                        {
+                            BtnSendCard.IsEnabled = true;
+                        }
+                        break;
                 }
             }));
         }
@@ -198,6 +213,7 @@ namespace GameClient
                 }
             }
             client.SendMessage("SLCT|" + sel);
+            BtnSendCard.IsEnabled = false;
         }
     }
 }

@@ -75,7 +75,7 @@
         
         <Button x:Name="BtnSendCard"
   Style="{StaticResource MaterialDesignFloatingActionAccentButton}"
-  ToolTip="Send Card Selected" Margin="0,0,20,20" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="BtnSendCard_Click">
+  ToolTip="Send Card Selected" Margin="0,0,20,20" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="BtnSendCard_Click" IsEnabled="False">
             <materialDesign:PackIcon x:Name="PIBtnSend"
     Kind="Send"
     Height="24"
