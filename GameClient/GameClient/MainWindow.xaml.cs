@@ -155,16 +155,26 @@ namespace GameClient
                         }
                         break;
                     case "CLST":
+                        vs = vs[1].Split(':');
+                        ICChat.Items.Add(new TextBlock
+                        {
+                            Text = vs[0] + " " + DateTime.Now.ToString(),
+                            Foreground = Brushes.DarkGray,
+                            TextWrapping = TextWrapping.Wrap
+                        });
                         if (vs[1].Length % 2 != 0)
                         {
                             NetWorkFailure("收到非法内容");
                             return;
                         }
                         LVCardLast.Items.Clear();
+                        WrapPanel panel = new WrapPanel();
                         for (int i = 0; i < vs[1].Length; i+=2)
                         {
                             LVCardLast.Items.Add(new MidCardView(vs[1][i], vs[1][i + 1]));
+                            panel.Children.Add(new SmallCardView(vs[1][i], vs[1][i + 1]));
                         }
+                        ICChat.Items.Add(panel);
                         break;
                     case "NPLR":
                         SetNowPlayer(int.Parse(vs[1]));
@@ -189,7 +199,7 @@ namespace GameClient
                         });
                         break;
                     case "QLDL":
-                        if(MessageBox.Show("你想要地主吗", "询问", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                        if(MessageBox.Show("你想要地主吗", UserName, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                         {
                             client.SendMessage("LDOK|");
                         }
@@ -198,7 +208,17 @@ namespace GameClient
                             client.SendMessage("LDNO|");
                         }
                         break;
-                    
+                    case "PNAM":
+                        TBName1.Text = vs[1];
+                        TBName2.Text = vs[2];
+                        TBName3.Text = vs[3];
+                        break;
+                    case "CBAS":
+                        WPBaseCard.Children.Clear();
+                        WPBaseCard.Children.Add(new SmallCardView(vs[1][0], vs[1][1]));
+                        WPBaseCard.Children.Add(new SmallCardView(vs[1][2], vs[1][3]));
+                        WPBaseCard.Children.Add(new SmallCardView(vs[1][4], vs[1][5]));
+                        break;
                 }
             }));
         }

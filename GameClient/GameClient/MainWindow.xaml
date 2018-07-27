@@ -30,12 +30,7 @@
                         <WrapPanel/>
                     </ItemsPanelTemplate>
                 </ListView.ItemsPanel>
-                <local:MidCardView Height="120" Width="80"></local:MidCardView>
-                <local:MidCardView Height="120" Width="80"></local:MidCardView>
-                <local:MidCardView Height="120" Width="80"></local:MidCardView>
-                <local:MidCardView Height="120" Width="80"></local:MidCardView>
-                <local:MidCardView Height="120" Width="80"></local:MidCardView>
-                <local:MidCardView Height="120" Width="80"></local:MidCardView>
+
             </ListView>
         </materialDesign:Card>
         <Grid Margin="10" Grid.Column="1">
@@ -61,18 +56,10 @@
                     <WrapPanel IsItemsHost="True" Orientation="Horizontal" />
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
-            <local:CardView/>
-            <local:CardView/>
-            <local:CardView/>
-            <local:CardView/>
-            <local:CardView/>
-            <local:CardView/>
-            <local:CardView/>
-            <local:CardView/>
-            <local:CardView/>
+
 
         </ListView>
-        
+
         <Button x:Name="BtnSendCard"
   Style="{StaticResource MaterialDesignFloatingActionAccentButton}"
   ToolTip="Send Card Selected" Margin="0,0,20,20" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="BtnSendCard_Click" IsEnabled="False">
@@ -81,7 +68,9 @@
     Height="24"
     Width="24" />
         </Button>
-        <Grid Height="63" Margin="0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
+        <Grid Height="63" Margin="0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1">
+            <WrapPanel x:Name="WPBaseCard" HorizontalAlignment="Center" Height="63" Margin="0" VerticalAlignment="Center" Width="100"/>
+        </Grid>
         <TextBox x:Name="TBChat"
         Style="{StaticResource MaterialDesignTextFieldBoxTextBox}" materialDesign:HintAssist.Hint="Chat" Grid.Column="1" Height="72" Margin="10.2,0,82.6,9.4" Grid.Row="1" TextWrapping="Wrap" Text="" VerticalAlignment="Bottom"/>
         <Button x:Name="BtnSendChat" Style="{StaticResource MaterialDesignFlatButton}" Content="SEND" Grid.Column="1" Height="71" Margin="0,0,9.6,10.4" Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="68" Click="BtnSendChat_Click"/>

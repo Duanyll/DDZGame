@@ -356,6 +356,7 @@ namespace GameServer
         {
             Program.Log("已开局");
             CreateCards();
+            AnnounceNewGame();
             cards[0].Sort();
             cards[1].Sort();
             cards[2].Sort();
@@ -408,7 +409,7 @@ namespace GameServer
                     if (cards[now].Count == 0)
                     {
                         AnnounceWinner(now);
-                        break;
+                        return;
                     }
                     else
                     {
@@ -423,6 +424,11 @@ namespace GameServer
                 CalculateScore();
             }
             Program.Log("本局结束");
+        }
+
+        private void AnnounceNewGame()
+        {
+            server.BroadCastToAll("PNAM|" + UserNames[0] + '|' + UserNames[1] + '|' + UserNames[2]);
         }
 
         private bool SelectionOK(int now, Selection Last, int Owner, Selection selection)
@@ -448,12 +454,13 @@ namespace GameServer
         {
             Program.Log(string.Format("玩家{0}赢了",now));
             server.BroadCastToAll("SLOG|" + UserNames[now] + "赢了");
+            server.BroadCastToAll("SMSG|" + UserNames[now] + "赢了");
         }
 
         private void AnnounceSelection(int now, Selection selection)
         {
             Program.Log(string.Format("玩家{0}的出牌是:",now) + selection.ToString());
-            server.BroadCastToAll("CLST|"+selection.ToString());
+            server.BroadCastToAll("CLST|"+UserNames[now]+':'+selection.ToString());
         }
 
         private void TellSelectionFail(int now)
@@ -469,6 +476,7 @@ namespace GameServer
             //return new Selection(Console.ReadLine());
             LastSelect = null;
             server.SendTo(UserNames[now], "GCRD|");
+            server.SendTo(UserNames[now], "SMSG|现在该你出牌");
             int i = 0;
             while (i++ < MAX_TIME_OUT)
             {
@@ -498,9 +506,10 @@ namespace GameServer
         {
             Program.Log("应该算分，但功能未开发");
             server.BroadCastToAll("SLOG|算分功能未开发");
+            server.BroadCastToAll("SMSG|算分功能未开发");
         }
 
-        const int MAX_TIME_OUT = 60;
+        const int MAX_TIME_OUT = 600;
         private bool AskLandlord(int now)
         {
             Program.Log(string.Format("询问玩家{0}是否成为地主",now));
@@ -632,6 +641,7 @@ namespace GameServer
                 server.SendTo(name, "SMSG|房间人数已满，您只能观战！");
             }
             server.BroadCastToAll("SLOG|" + name + "进入了房间");
+            server.BroadCastToAll("SMSG|" + name + "进入了房间");
         }
 
         private void UserLogOut(string name)
@@ -639,9 +649,11 @@ namespace GameServer
             int idx = UserNames.IndexOf(name);
             if (idx < 3)
             {
-                server.BroadCastToAll("SLOG|" + name + "已退出游戏");
+                
                 AbortGame();
             }
+            server.BroadCastToAll("SLOG|" + name + "已退出房间");
+            server.BroadCastToAll("SMSG|" + name + "已退出房间");
             UserNames.RemoveAt(idx);
         }
 
