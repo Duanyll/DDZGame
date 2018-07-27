@@ -125,25 +125,23 @@ namespace GameClient
         {
             Dispatcher.BeginInvoke(new Action(() =>
             {
-                string[] vs = msg.Split(':');
-                if (vs.Count() > 1)
-                {
-                    msg = msg.Split('|')[1];
-                    ICChat.Items.Add(new TextBlock
-                    {
-                        Text = DateTime.Now.ToString(),
-                        Foreground = Brushes.DarkGray,
-                        TextWrapping = TextWrapping.Wrap
-                    });
-                    ICChat.Items.Add(new TextBlock
-                    {
-                        Text = msg,
-                        TextWrapping = TextWrapping.Wrap
-                    });
-                }
-                vs = msg.Split('|');
+                string[] vs = msg.Split('|');
                 switch (vs[0])
                 {
+                    case "CHAT":
+                        vs = vs[1].Split(':');
+                        ICChat.Items.Add(new TextBlock
+                        {
+                            Text = vs[0] + " " + DateTime.Now.ToString(),
+                            Foreground = Brushes.DarkGray,
+                            TextWrapping = TextWrapping.Wrap
+                        });
+                        ICChat.Items.Add(new TextBlock
+                        {
+                            Text = vs[1],
+                            TextWrapping = TextWrapping.Wrap
+                        });
+                        break;
                     case "COWN":
                         if (vs[1].Length % 2 != 0)
                         {
@@ -171,15 +169,36 @@ namespace GameClient
                     case "NPLR":
                         SetNowPlayer(int.Parse(vs[1]));
                         break;
-                    case "PWIN":
-                        snakebar.MessageQueue.Enqueue(vs[1] + "赢了");
-                        break;
                     case "GCRD":
-                        if (vs[1] == UserName)
+                        BtnSendCard.IsEnabled = true;
+                        break;
+                    case "SMSG":
+                        snakebar.MessageQueue.Enqueue(vs[1]);
+                        break;
+                    case "SLOG":
+                        ICChat.Items.Add(new TextBlock
                         {
-                            BtnSendCard.IsEnabled = true;
+                            Text = DateTime.Now.ToString(),
+                            Foreground = Brushes.DarkGray,
+                            TextWrapping = TextWrapping.Wrap
+                        });
+                        ICChat.Items.Add(new TextBlock
+                        {
+                            Text = vs[1],
+                            TextWrapping = TextWrapping.Wrap
+                        });
+                        break;
+                    case "QLDL":
+                        if(MessageBox.Show("你想要地主吗", "询问", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                        {
+                            client.SendMessage("LDOK|");
+                        }
+                        else
+                        {
+                            client.SendMessage("LDNO|");
                         }
                         break;
+                    
                 }
             }));
         }

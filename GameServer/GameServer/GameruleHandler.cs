@@ -337,6 +337,9 @@ namespace GameServer
         {
             Program.Log("已调用GameruleHandler构造函数");
             MainThread = new Thread(Work);
+            server.UserLoggedIn += NewUser;
+            server.UserLoggedOut += UserLogOut;
+            server.MessageRecieved += RecvMsg;
         }
 
         bool IsSubSet(Selection a,Selection b)
@@ -444,49 +447,83 @@ namespace GameServer
         private void AnnounceWinner(int now)
         {
             Program.Log(string.Format("玩家{0}赢了",now));
+            server.BroadCastToAll("SLOG|" + UserNames[now] + "赢了");
         }
 
         private void AnnounceSelection(int now, Selection selection)
         {
             Program.Log(string.Format("玩家{0}的出牌是:",now) + selection.ToString());
+            server.BroadCastToAll("CLST|"+selection.ToString());
         }
 
         private void TellSelectionFail(int now)
         {
             Program.Log(string.Format("玩家{0}的出牌无效",now));
+            server.SendTo(UserNames[now],"SMSG|出牌无效");
         }
 
         private Selection GetSelection(int now)
         {
             Program.Log(string.Format("正在等待玩家{0}出牌", now));
-            Program.Log("请输入出牌");
-            return new Selection(Console.ReadLine());
+            //Program.Log("请输入出牌");
+            //return new Selection(Console.ReadLine());
+            LastSelect = null;
+            server.SendTo(UserNames[now], "GCRD|");
+            int i = 0;
+            while (i++ < MAX_TIME_OUT)
+            {
+                if (LastSelect != null)
+                {
+                    return new Selection(LastSelect);
+                }
+                Thread.Sleep(0);
+                Thread.Sleep(100);
+            }
+            return new Selection("");
         }
 
         private void AnnounceRound(int now)
         {
             Program.Log(string.Format("现在轮到玩家{0}出牌", now));
+            server.BroadCastToAll("NPLR|" + now);
         }
 
         private void SendBaseCard()
         {
             Program.Log("底牌是：" + baseCard.ToString());
+            server.BroadCastToAll("CBAS|" + baseCard.ToString());
         }
 
         private void CalculateScore()
         {
             Program.Log("应该算分，但功能未开发");
+            server.BroadCastToAll("SLOG|算分功能未开发");
         }
 
+        const int MAX_TIME_OUT = 60;
         private bool AskLandlord(int now)
         {
             Program.Log(string.Format("询问玩家{0}是否成为地主",now));
-            return System.Windows.Forms.MessageBox.Show("是否成为地主？", "提示", System.Windows.Forms.MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes;
+            //return System.Windows.Forms.MessageBox.Show("是否成为地主？", "提示", System.Windows.Forms.MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes;
+            LastLD = null;
+            server.SendTo(UserNames[now], "QLDL|");
+            int i = 0;
+            while (i++ < MAX_TIME_OUT)
+            {
+                if (LastLD != null)
+                {
+                    return (bool)LastLD;
+                }
+                Thread.Sleep(0);
+                Thread.Sleep(100);
+            }
+            return false;
         }
 
         private void SendCardList(int v)
         {
             Program.Log(string.Format("向玩家{0}发送手牌列表：", v) + cards[v].ToString());
+            server.SendTo(UserNames[v], "COWN|" + cards[v].ToString());
         }
 
         private void CreateCards()
@@ -580,6 +617,54 @@ namespace GameServer
 
             Program.Log("测试服务器");
             server.StartService();
+        }
+
+        List<string> UserNames = new List<string>();
+        private void NewUser(string name)
+        {
+            UserNames.Add(name);
+            if (UserNames.Count >= 3 && MainThread.ThreadState != System.Threading.ThreadState.Running)
+            {
+                StartGame();
+            }
+            if (UserNames.Count > 3)
+            {
+                server.SendTo(name, "SMSG|房间人数已满，您只能观战！");
+            }
+            server.BroadCastToAll("SLOG|" + name + "进入了房间");
+        }
+
+        private void UserLogOut(string name)
+        {
+            int idx = UserNames.IndexOf(name);
+            if (idx < 3)
+            {
+                server.BroadCastToAll("SLOG|" + name + "已退出游戏");
+                AbortGame();
+            }
+            UserNames.RemoveAt(idx);
+        }
+
+        string LastSelect = null;
+        bool? LastLD = null;
+        private void RecvMsg(string clno,string msg)
+        {
+            string[] vs = msg.Split('|');
+            switch (vs[0])
+            {
+                case "CHAT":
+                    server.BroadCastToAll("CHAT|" + clno + ":" + vs[1]);
+                    break;
+                case "SLCT":
+                    LastSelect = vs[1];
+                    break;
+                case "LDOK":
+                    LastLD = true;
+                    break;
+                case "LDNO":
+                    LastLD = false;
+                    break;
+            }
         }
 #endif
     }
