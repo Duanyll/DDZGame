@@ -34,11 +34,6 @@ namespace GameClient
         private void BtnSendChat_Click(object sender, RoutedEventArgs e)
         {
 #if DEBUG
-            if(TBChat.Text == "$test$")
-            {
-                DoTest();
-                return;
-            }
             string[] vs = TBChat.Text.Split(' ');
             if (vs.Count() == 3 && vs[0] == "$connect$")
             {
@@ -77,12 +72,6 @@ namespace GameClient
                 snakebar.MessageQueue.Enqueue("请输入要发送的内容");
             }
             
-        }
-
-        Random random = new Random();
-        private void DoTest()
-        {
-            SetNowPlayer(random.Next(3));
         }
 
         private void SetNowPlayer(int now)
@@ -167,14 +156,17 @@ namespace GameClient
                             NetWorkFailure("收到非法内容");
                             return;
                         }
-                        LVCardLast.Items.Clear();
-                        WrapPanel panel = new WrapPanel();
-                        for (int i = 0; i < vs[1].Length; i+=2)
+                        if(vs[1].Length > 0)
                         {
-                            LVCardLast.Items.Add(new MidCardView(vs[1][i], vs[1][i + 1]));
-                            panel.Children.Add(new SmallCardView(vs[1][i], vs[1][i + 1]));
+                            LVCardLast.Items.Clear();
+                            WrapPanel panel = new WrapPanel();
+                            for (int i = 0; i < vs[1].Length; i += 2)
+                            {
+                                LVCardLast.Items.Add(new MidCardView(vs[1][i], vs[1][i + 1]));
+                                panel.Children.Add(new SmallCardView(vs[1][i], vs[1][i + 1]));
+                            }
+                            ICChat.Items.Add(panel);
                         }
-                        ICChat.Items.Add(panel);
                         break;
                     case "NPLR":
                         SetNowPlayer(int.Parse(vs[1]));
