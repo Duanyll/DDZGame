@@ -123,7 +123,7 @@ namespace NetClient
         //获取服务器端的消息
         private void DataFromServer()
         {
-            MessageRecieved("Connected to the Chat Server...");
+            MessageRecieved("SLOG|已连接到服务器");
             isListen = true;
             try
             {
@@ -141,7 +141,8 @@ namespace NetClient
                             clientSocket.Close();
                             clientSocket = null;
 
-                            MessageRecieved( "服务器已关闭");
+                            MessageRecieved( "SLOG|服务器已关闭");
+                            MessageRecieved( "SMSG|服务器已关闭");
                             thDataFromServer.Abort();   //这一句必须放在最后，不然这个进程都关了后面的就不会执行了
 
                             return;

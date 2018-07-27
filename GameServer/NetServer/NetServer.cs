@@ -32,9 +32,27 @@ namespace NetServer
         public event UserLogout UserLoggedOut;
         public event RecievedMessage MessageRecieved;
 
+        private string GetLocalIPAddress()
+        {
+            System.Net.IPAddress[] addressList = Dns.GetHostEntry(Dns.GetHostName()).AddressList;
+            string strNativeIP = "";
+            string strServerIP = "";
+            if (addressList.Length > 1)
+            {
+                strNativeIP = addressList[0].ToString();
+                strServerIP = addressList[1].ToString();
+            }
+            else if (addressList.Length == 1)
+            {
+                strServerIP = addressList[0].ToString();
+            }
+            return strServerIP;
+        }
+
         public NetServer()
         {
-            ipadr = IPAddress.Loopback;
+            ipadr = IPAddress.Parse( GetLocalIPAddress());
+            Log("本机ip：" + ipadr.ToString());
         }
 
         public static void Log(string a)
@@ -177,7 +195,7 @@ namespace NetServer
                 }
                 catch (SocketException e)
                 {
-                    Log(e.ToString() + "\r\nStartListen\r\n" + DateTime.Now.ToString() + "\r\n");
+                    Log(e.ToString() + "StartListen" + DateTime.Now.ToString() + "");
                 }
 
                 //TCP是面向字节流的
@@ -246,7 +264,7 @@ namespace NetServer
                     }
                     catch (Exception ep)
                     {
-                        Log(ep.ToString() + "\r\n\t\t" + DateTime.Now.ToString() + "\r\n");
+                        Log(ep.ToString() + "\t\t" + DateTime.Now.ToString() + "");
                     }
 
 
@@ -325,7 +343,7 @@ namespace NetServer
                 serverSocket.Close();
                 serverSocket = null;
                 isListen = false;
-                Log("服务停止\r\n");
+                Log("服务停止");
             }
 
         }
@@ -341,7 +359,7 @@ namespace NetServer
                 {
                     ipadr = IPAddress.Parse(txtIP.Trim());
                     StopService();
-                    Log("服务器重启中，请稍候...\r\n");
+                    Log("服务器重启中，请稍候...");
                     StartService();
 
 
@@ -370,7 +388,7 @@ namespace NetServer
             {
                 ipadr = IPAddress.Loopback;
                 StopService();
-                Log("服务器重启中，请稍候...\r\n");
+                Log("服务器重启中，请稍候...");
 
                 StartService();
                 Log("当前IP：" + endPoint.Address.ToString());
@@ -454,8 +472,8 @@ namespace NetServer
                                 isListen = false;
                                 clientList.Remove(clNo);
                                 UserLoggedOut(clNo);
-                                Console.WriteLine(clNo + "已断开与服务器连接\r");
-                                BroadCast.PushMessage(clNo + "已下线\r", "", false, clientList);
+                                Console.WriteLine(clNo + "已断开与服务器连接");
+                                BroadCast.PushMessage(clNo + "已下线", "", false, clientList);
                                 clientSocket.Close();
                                 clientSocket = null;
                             }
@@ -472,7 +490,7 @@ namespace NetServer
 
                 //    clientSocket.Close();
                 //    clientSocket = null;
-                //    File.AppendAllText("E:\\Exception.txt",e.ToString()+"\r\nChat\r\n"+DateTime.Now.ToString()+"\r\n");
+                //    File.AppendAllText("E:\\Exception.txt",e.ToString()+"Chat"+DateTime.Now.ToString()+"");
                 //}
             }
 
@@ -509,7 +527,7 @@ namespace NetServer
                 {
                     brdcastSocket.Close();
                     brdcastSocket = null;
-                    Console.WriteLine(e.ToString() + "\r\nPushMessage\r\n" + DateTime.Now.ToString());
+                    Console.WriteLine(e.ToString() + "PushMessage" + DateTime.Now.ToString());
                     continue;
                 }
             }

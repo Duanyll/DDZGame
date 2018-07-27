@@ -409,6 +409,7 @@ namespace GameServer
                     if (cards[now].Count == 0)
                     {
                         AnnounceWinner(now);
+                        server.StopService();
                         return;
                     }
                     else
@@ -424,6 +425,7 @@ namespace GameServer
                 CalculateScore();
             }
             Program.Log("本局结束");
+            server.StopService();
         }
 
         private void AnnounceNewGame()
@@ -460,7 +462,7 @@ namespace GameServer
         private void AnnounceSelection(int now, Selection selection)
         {
             Program.Log(string.Format("玩家{0}的出牌是:",now) + selection.ToString());
-            server.BroadCastToAll("CLST|"+UserNames[now]+':'+selection.ToString());
+            server.BroadCastToAll("CLST|" + UserNames[now] + ':' + selection.ToString());
         }
 
         private void TellSelectionFail(int now)
