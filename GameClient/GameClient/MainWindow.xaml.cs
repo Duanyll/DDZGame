@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace GameClient
 {
@@ -23,6 +24,7 @@ namespace GameClient
         NetClient.NetworkClient client = new NetClient.NetworkClient();
         int MyID = -1;
         string UserName;
+        DispatcherTimer timer = new DispatcherTimer();
         public MainWindow()
         {
             InitializeComponent();
@@ -31,6 +33,23 @@ namespace GameClient
             client.MessageRecieved += MsgRecieved;
             TBUserName.Text = Properties.Settings.Default.LastUserName;
             TBServerIP.Text = Properties.Settings.Default.LastServerIP;
+            timer.Interval = new TimeSpan(0, 0, 1);
+            timer.Tick += Timer_Tick;
+        }
+
+        int CountDown = 60;
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            if (CountDown > 0)
+            {
+                CountDown--;
+                TBCountDown.Text = CountDown.ToString();
+            }
+            else
+            {
+                TBCountDown.Text = "";
+                timer.Stop();
+            }
         }
 
         private void BtnSendChat_Click(object sender, RoutedEventArgs e)
@@ -175,6 +194,9 @@ namespace GameClient
                         break;
                     case "GCRD":
                         BtnSendCard.IsEnabled = true;
+                        CountDown = 60;
+                        timer.Start();
+                        //BtnSendCard.Effect.
                         break;
                     case "SMSG":
                         snakebar.MessageQueue.Enqueue(vs[1]);
@@ -259,6 +281,8 @@ namespace GameClient
                     sel += card.ToString();
                 }
             }
+            timer.Stop();
+            TBCountDown.Text = "";
             client.SendMessage("SLCT|" + sel);
             BtnSendCard.IsEnabled = false;
         }
