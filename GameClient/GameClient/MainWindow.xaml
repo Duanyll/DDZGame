@@ -70,6 +70,67 @@
         </Button>
         <Grid Height="63" Margin="0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1">
             <WrapPanel x:Name="WPBaseCard" HorizontalAlignment="Center" Height="63" Margin="0" VerticalAlignment="Center" Width="100"/>
+            <materialDesign:PopupBox
+    Margin="16,0,16,0"
+    StaysOpen="True" HorizontalAlignment="Right">
+                <Grid
+      Width="300"
+      Margin="8,8,8,8">
+                    <Grid.Resources>
+                        <Style
+          TargetType="CheckBox"
+          BasedOn="{StaticResource MaterialDesignCheckBox}">
+                            <Setter
+            Property="Margin"
+            Value="8,8,10,8" />
+                        </Style>
+                        <Style
+          TargetType="TextBox"
+          BasedOn="{StaticResource MaterialDesignTextBox}">
+                            <Setter
+            Property="materialDesign:HintAssist.IsFloating"
+            Value="True" />
+                            <Setter
+            Property="Margin"
+            Value="8,8,8,8" />
+                        </Style>
+                    </Grid.Resources>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+          Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition
+          Height="*" />
+                        <RowDefinition
+          Height="*" />
+                        <RowDefinition
+          Height="*" />
+                        <RowDefinition Height="*">
+                            
+                        </RowDefinition>
+                    </Grid.RowDefinitions>
+                    <TextBlock
+        Grid.Column="0"
+        Grid.Row="0"
+        Style="{StaticResource MaterialDesignTitleTextBlock}"
+        Margin="8,8,8,16">
+      OPTIONS
+                    </TextBlock>
+                    <TextBox
+        Grid.Column="0"
+        Grid.Row="1"
+        materialDesign:HintAssist.Hint="Nickname"
+        Text="" />
+                    <TextBox
+        Grid.Column="0"
+        Grid.Row="2"
+        materialDesign:HintAssist.Hint="Server ip address"
+        Text="" />
+                    <Button Content="CONNECT" HorizontalAlignment="Right" VerticalAlignment="Bottom" Style="{StaticResource MaterialDesignRaisedButton}" Grid.Row="3"></Button>
+                    <Button Content="STOP" HorizontalAlignment="Left" VerticalAlignment="Bottom" Style="{StaticResource MaterialDesignFlatButton}" Grid.Row="3"></Button>
+                </Grid>
+            </materialDesign:PopupBox>
         </Grid>
         <TextBox x:Name="TBChat"
         Style="{StaticResource MaterialDesignTextFieldBoxTextBox}" materialDesign:HintAssist.Hint="Chat" Grid.Column="1" Height="72" Margin="10.2,0,82.6,9.4" Grid.Row="1" TextWrapping="Wrap" Text="" VerticalAlignment="Bottom"/>
