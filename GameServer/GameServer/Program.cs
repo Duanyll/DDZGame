@@ -39,6 +39,7 @@ namespace GameServer
             //Log("即将终止服务器程序,请按任意键退出");
             Log("按任意键退出服务器");
                 Console.ReadKey();
+            handler.StopAll();
                 return;
 #if !DEBUG
             }

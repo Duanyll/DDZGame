@@ -630,6 +630,7 @@ namespace GameServer
 
             StartGame();
         }
+#endif
 
         List<string> UserNames = new List<string>();
         private void NewUser(string name)
@@ -681,6 +682,13 @@ namespace GameServer
                     break;
             }
         }
-#endif
+        public void StopAll()
+        {
+            server.StopService();
+            if (MainThread.IsAlive)
+            {
+                MainThread.Abort();
+            }
+        }
     }
 }

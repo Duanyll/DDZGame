@@ -397,12 +397,12 @@ namespace NetServer
 
         public void BroadCastToAll(string msg)
         {
-            BroadCast.PushMessage(msg, "", false, clientList);
+            BroadCast.PushMessage(msg+"*", "", false, clientList);
         }
 
         public void SendTo(string clno,string msg)
         {
-            clientList[clno].Send(Encoding.UTF8.GetBytes(msg));
+            clientList[clno].Send(Encoding.UTF8.GetBytes(msg+"*"));
         }
 
     }

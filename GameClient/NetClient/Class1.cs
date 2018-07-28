@@ -123,7 +123,7 @@ namespace NetClient
         //获取服务器端的消息
         private void DataFromServer()
         {
-            MessageRecieved("SLOG|已连接到服务器");
+            MessageRecieved("SLOG|正在连接服务器");
             isListen = true;
             try
             {
@@ -161,7 +161,11 @@ namespace NetClient
                         else
                         {
                             //txtName.Enabled = false;    //当用户名唯一时才禁止再次输入用户名
-                            MessageRecieved(dataFromClient);
+                            string[] vs = dataFromClient.Split('*');
+                            foreach(string i in vs)
+                            {
+                                MessageRecieved(i);
+                            }
                         }
                     }
                 }
@@ -188,7 +192,8 @@ namespace NetClient
 
                 clientSocket.Close();
                 clientSocket = null;
-                    MessageRecieved( "已断开与服务器的连接");
+                    MessageRecieved( "SMSG|已断开与服务器的连接");
+                MessageRecieved("SLOG|已断开与服务器的连接");
             }
         }
     }
