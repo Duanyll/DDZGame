@@ -1,19 +1,10 @@
-﻿<Window x:Class="GameClient.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:GameClient"
-        mc:Ignorable="d"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
-        TextElement.FontWeight="Regular"
-        TextElement.FontSize="13"
-        TextOptions.TextFormattingMode="Ideal" 
-        TextOptions.TextRenderingMode="Auto"        
-        Background="{DynamicResource MaterialDesignPaper}"
-        FontFamily="{DynamicResource MaterialDesignFont}"
-        Title="斗地主" Height="500" Width="800" MinWidth="800" MinHeight="500" Closed="Window_Closed">
+﻿<Window x:Class="GameClient.MainWindow" 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:local="clr-namespace:GameClient" mc:Ignorable="d" 
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" TextElement.Foreground="{DynamicResource MaterialDesignBody}" TextElement.FontWeight="Regular" TextElement.FontSize="13" TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="Auto" Background="{DynamicResource MaterialDesignPaper}" FontFamily="{DynamicResource MaterialDesignFont}" Title="斗地主" Height="500" Width="800" MinWidth="800" MinHeight="500" Closed="Window_Closed">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"/>
@@ -45,7 +36,7 @@
             </Grid.RowDefinitions>
             <TextBlock x:Name="TBName1" Style="{StaticResource MaterialDesignTitleTextBlock}" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="1" Margin="10"></TextBlock>
             <TextBlock x:Name="TBName2" Style="{StaticResource MaterialDesignTitleTextBlock}" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" Margin="10"></TextBlock>
-            <TextBlock x:Name="TBName3" Style="{StaticResource MaterialDesignTitleTextBlock}"  Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="1" Margin="10"></TextBlock>
+            <TextBlock x:Name="TBName3" Style="{StaticResource MaterialDesignTitleTextBlock}" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="1" Margin="10"></TextBlock>
             <materialDesign:PackIcon x:Name="PIInd1" Kind="ArrowRightThick" Margin="10" Height="Auto" Width="Auto" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Visibility="Hidden" />
             <materialDesign:PackIcon x:Name="PIInd2" Kind="ArrowRightThick" Margin="10" Height="Auto" Width="Auto" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="1" Visibility="Hidden" />
             <materialDesign:PackIcon x:Name="PIInd3" Kind="ArrowRightThick" Margin="10" Height="Auto" Width="Auto" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="2" Visibility="Hidden" />
@@ -60,80 +51,44 @@
 
         </ListView>
 
-        <Button x:Name="BtnSendCard"
-  Style="{StaticResource MaterialDesignFloatingActionAccentButton}"
-  ToolTip="Send Card Selected" Margin="0,0,20,20" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="BtnSendCard_Click" IsEnabled="False">
-            <materialDesign:PackIcon x:Name="PIBtnSend"
-    Kind="Send"
-    Height="24"
-    Width="24" />
+        <Button x:Name="BtnSendCard" Style="{StaticResource MaterialDesignFloatingActionAccentButton}" ToolTip="Send Card Selected" Margin="0,0,20,20" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="BtnSendCard_Click" IsEnabled="False">
+            <materialDesign:PackIcon x:Name="PIBtnSend" Kind="Send" Height="24" Width="24" />
         </Button>
         <Grid Height="63" Margin="0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1">
             <WrapPanel x:Name="WPBaseCard" HorizontalAlignment="Center" Height="63" Margin="0" VerticalAlignment="Center" Width="100"/>
-            <materialDesign:PopupBox
-    Margin="16,0,16,0"
-    StaysOpen="True" HorizontalAlignment="Right">
-                <Grid
-      Width="300"
-      Margin="8,8,8,8">
+            <materialDesign:PopupBox Margin="16,0,16,0" StaysOpen="True" HorizontalAlignment="Right">
+                <Grid Width="300" Margin="8,8,8,8">
                     <Grid.Resources>
-                        <Style
-          TargetType="CheckBox"
-          BasedOn="{StaticResource MaterialDesignCheckBox}">
-                            <Setter
-            Property="Margin"
-            Value="8,8,10,8" />
+                        <Style TargetType="CheckBox" BasedOn="{StaticResource MaterialDesignCheckBox}">
+                            <Setter Property="Margin" Value="8,8,10,8" />
                         </Style>
-                        <Style
-          TargetType="TextBox"
-          BasedOn="{StaticResource MaterialDesignTextBox}">
-                            <Setter
-            Property="materialDesign:HintAssist.IsFloating"
-            Value="True" />
-                            <Setter
-            Property="Margin"
-            Value="8,8,8,8" />
+                        <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignTextBox}">
+                            <Setter Property="materialDesign:HintAssist.IsFloating" Value="True" />
+                            <Setter Property="Margin" Value="8,8,8,8" />
                         </Style>
                     </Grid.Resources>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition
-          Width="*" />
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition
-          Height="*" />
-                        <RowDefinition
-          Height="*" />
-                        <RowDefinition
-          Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
                         <RowDefinition Height="*">
-                            
+
                         </RowDefinition>
                     </Grid.RowDefinitions>
-                    <TextBlock
-        Grid.Column="0"
-        Grid.Row="0"
-        Style="{StaticResource MaterialDesignTitleTextBlock}"
-        Margin="8,8,8,16">
+                    <TextBlock Grid.Column="0" Grid.Row="0" Style="{StaticResource MaterialDesignTitleTextBlock}" Margin="8,8,8,16">
       CONNECT TO SERVER
                     </TextBlock>
-                    <TextBox x:Name="TBUserName"
-        Grid.Column="0"
-        Grid.Row="1"
-        materialDesign:HintAssist.Hint="Nickname"
-        Text="" />
-                    <TextBox x:Name="TBServerIP"
-        Grid.Column="0"
-        Grid.Row="2"
-        materialDesign:HintAssist.Hint="Server ip address"
-        Text="" />
+                    <TextBox x:Name="TBUserName" Grid.Column="0" Grid.Row="1" materialDesign:HintAssist.Hint="Nickname" Text="" />
+                    <TextBox x:Name="TBServerIP" Grid.Column="0" Grid.Row="2" materialDesign:HintAssist.Hint="Server ip address" Text="" />
                     <Button x:Name="BtnConnect" Content="CONNECT" HorizontalAlignment="Right" VerticalAlignment="Bottom" Style="{StaticResource MaterialDesignRaisedButton}" Grid.Row="3" Click="BtnConnect_Click"></Button>
                     <Button x:Name="BtnStop" Content="STOP" HorizontalAlignment="Left" VerticalAlignment="Bottom" Style="{StaticResource MaterialDesignFlatButton}" Grid.Row="3" Click="BtnStop_Click"></Button>
                 </Grid>
             </materialDesign:PopupBox>
         </Grid>
-        <TextBox x:Name="TBChat"
-        Style="{StaticResource MaterialDesignTextFieldBoxTextBox}" materialDesign:HintAssist.Hint="Chat" Grid.Column="1" Height="72" Margin="10.2,0,82.6,9.4" Grid.Row="1" TextWrapping="Wrap" Text="" VerticalAlignment="Bottom"/>
+        <TextBox x:Name="TBChat" Style="{StaticResource MaterialDesignTextFieldBoxTextBox}" materialDesign:HintAssist.Hint="Chat" Grid.Column="1" Height="72" Margin="10.2,0,82.6,9.4" Grid.Row="1" TextWrapping="Wrap" Text="" VerticalAlignment="Bottom"/>
         <Button x:Name="BtnSendChat" Style="{StaticResource MaterialDesignFlatButton}" Content="SEND" Grid.Column="1" Height="71" Margin="0,0,9.6,10.4" Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="68" Click="BtnSendChat_Click"/>
         <materialDesign:Snackbar x:Name="snakebar" Grid.ColumnSpan="2" Margin="0" Grid.Row="1"></materialDesign:Snackbar>
         <ScrollViewer Grid.Column="1" Margin="0.2,63.4,-0.4,81.4" Grid.Row="1" VerticalContentAlignment="Stretch">

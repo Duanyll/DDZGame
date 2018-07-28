@@ -583,7 +583,9 @@ namespace GameServer
         Thread MainThread;
         public void StartGame()
         {
-            MainThread.Start();
+            MainThread.Abort();
+            MainThread = new Thread(Work);
+            server.StartService();
             Program.Log("已启动主线程");
         }
 
@@ -626,8 +628,7 @@ namespace GameServer
             //Program.Log("测试游戏逻辑");
             //StartGame();
 
-            Program.Log("测试服务器");
-            server.StartService();
+            StartGame();
         }
 
         List<string> UserNames = new List<string>();
@@ -636,7 +637,7 @@ namespace GameServer
             UserNames.Add(name);
             if (UserNames.Count >= 3 && MainThread.ThreadState != System.Threading.ThreadState.Running)
             {
-                StartGame();
+                MainThread.Start();
             }
             if (UserNames.Count > 3)
             {
