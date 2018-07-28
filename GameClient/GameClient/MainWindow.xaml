@@ -115,20 +115,20 @@
         Grid.Row="0"
         Style="{StaticResource MaterialDesignTitleTextBlock}"
         Margin="8,8,8,16">
-      OPTIONS
+      CONNECT TO SERVER
                     </TextBlock>
-                    <TextBox
+                    <TextBox x:Name="TBUserName"
         Grid.Column="0"
         Grid.Row="1"
         materialDesign:HintAssist.Hint="Nickname"
         Text="" />
-                    <TextBox
+                    <TextBox x:Name="TBServerIP"
         Grid.Column="0"
         Grid.Row="2"
         materialDesign:HintAssist.Hint="Server ip address"
         Text="" />
-                    <Button Content="CONNECT" HorizontalAlignment="Right" VerticalAlignment="Bottom" Style="{StaticResource MaterialDesignRaisedButton}" Grid.Row="3"></Button>
-                    <Button Content="STOP" HorizontalAlignment="Left" VerticalAlignment="Bottom" Style="{StaticResource MaterialDesignFlatButton}" Grid.Row="3"></Button>
+                    <Button x:Name="BtnConnect" Content="CONNECT" HorizontalAlignment="Right" VerticalAlignment="Bottom" Style="{StaticResource MaterialDesignRaisedButton}" Grid.Row="3" Click="BtnConnect_Click"></Button>
+                    <Button x:Name="BtnStop" Content="STOP" HorizontalAlignment="Left" VerticalAlignment="Bottom" Style="{StaticResource MaterialDesignFlatButton}" Grid.Row="3" Click="BtnStop_Click"></Button>
                 </Grid>
             </materialDesign:PopupBox>
         </Grid>

@@ -29,6 +29,8 @@ namespace GameClient
             snakebar.MessageQueue = new MaterialDesignThemes.Wpf.SnackbarMessageQueue();
             client.FailureCaused += NetWorkFailure;
             client.MessageRecieved += MsgRecieved;
+            TBUserName.Text = Properties.Settings.Default.LastUserName;
+            TBServerIP.Text = Properties.Settings.Default.LastServerIP;
         }
 
         private void BtnSendChat_Click(object sender, RoutedEventArgs e)
@@ -245,6 +247,24 @@ namespace GameClient
             }
             client.SendMessage("SLCT|" + sel);
             BtnSendCard.IsEnabled = false;
+        }
+
+        private void BtnConnect_Click(object sender, RoutedEventArgs e)
+        {
+            if (TBUserName.Text != "" && TBServerIP.Text != "")
+            {
+                Properties.Settings.Default.LastUserName = TBUserName.Text;
+                Properties.Settings.Default.LastServerIP = TBServerIP.Text;
+                if(client.Connect(TBUserName.Text, TBServerIP.Text))
+                {
+                    Properties.Settings.Default.Save();
+                }
+            }
+        }
+
+        private void BtnStop_Click(object sender, RoutedEventArgs e)
+        {
+            client.Stop();
         }
     }
 }
