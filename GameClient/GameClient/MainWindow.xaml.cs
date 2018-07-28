@@ -203,15 +203,29 @@ namespace GameClient
                         }
                         break;
                     case "PNAM":
-                        TBName1.Text = vs[1];
-                        TBName2.Text = vs[2];
-                        TBName3.Text = vs[3];
+                        TBName1.Text = vs[1] + ((vs[1] == UserName) ? "(YOU)" : "");
+                        TBName2.Text = vs[2] + ((vs[2] == UserName) ? "(YOU)" : "");
+                        TBName3.Text = vs[3] + ((vs[3] == UserName) ? "(YOU)" : "");
                         break;
                     case "CBAS":
                         WPBaseCard.Children.Clear();
                         WPBaseCard.Children.Add(new SmallCardView(vs[1][0], vs[1][1]));
                         WPBaseCard.Children.Add(new SmallCardView(vs[1][2], vs[1][3]));
                         WPBaseCard.Children.Add(new SmallCardView(vs[1][4], vs[1][5]));
+                        break;
+                    case "PLDL":
+                        switch (int.Parse(vs[1]))
+                        {
+                            case 0:
+                                TBName1.Text += "(♚)";
+                                break;
+                            case 1:
+                                TBName2.Text += "(♚)";
+                                break;
+                            case 2:
+                                TBName3.Text += "(♚)";
+                                break;
+                        }
                         break;
                 }
             }));
@@ -255,6 +269,7 @@ namespace GameClient
             {
                 Properties.Settings.Default.LastUserName = TBUserName.Text;
                 Properties.Settings.Default.LastServerIP = TBServerIP.Text;
+                UserName = TBUserName.Text;
                 if(client.Connect(TBUserName.Text, TBServerIP.Text))
                 {
                     Properties.Settings.Default.Save();

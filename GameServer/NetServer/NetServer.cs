@@ -51,8 +51,13 @@ namespace NetServer
 
         public NetServer()
         {
-            ipadr = IPAddress.Parse( GetLocalIPAddress());
-            Log("本机ip：" + ipadr.ToString());
+            Console.WriteLine("请输入本机ip");
+            while (!IPAddress.TryParse(Console.ReadLine(),out ipadr))
+            {
+                Console.WriteLine("请输入本机ip");
+            }
+            //ipadr = IPAddress.Parse( GetLocalIPAddress());
+            //Log("本机ip：" + ipadr.ToString());
         }
 
         public static void Log(string a)
