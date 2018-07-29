@@ -381,6 +381,7 @@ namespace GameServer
             if (LandlordSelected)
             {
                 Program.Log(String.Format("{0}号玩家是地主", now));
+                server.BroadCastToAll("PLDL|" + now);
                 cards[now].AddRange(baseCard);
                 cards[now].Sort();
                 SendBaseCard();
