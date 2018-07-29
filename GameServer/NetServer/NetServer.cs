@@ -32,32 +32,38 @@ namespace NetServer
         public event UserLogout UserLoggedOut;
         public event RecievedMessage MessageRecieved;
 
-        private string GetLocalIPAddress()
+        /// <summary>
+        /// 获取本机IP地址
+        /// </summary>
+        /// <returns>本机IP地址</returns>
+        public static string GetLocalIP()
         {
-            System.Net.IPAddress[] addressList = Dns.GetHostEntry(Dns.GetHostName()).AddressList;
-            string strNativeIP = "";
-            string strServerIP = "";
-            if (addressList.Length > 1)
+            try
             {
-                strNativeIP = addressList[0].ToString();
-                strServerIP = addressList[1].ToString();
+                string HostName = Dns.GetHostName(); //得到主机名
+                IPHostEntry IpEntry = Dns.GetHostEntry(HostName);
+                for (int i = 0; i < IpEntry.AddressList.Length; i++)
+                {
+                    //从IP地址列表中筛选出IPv4类型的IP地址
+                    //AddressFamily.InterNetwork表示此IP为IPv4,
+                    //AddressFamily.InterNetworkV6表示此地址为IPv6类型
+                    if (IpEntry.AddressList[i].AddressFamily == AddressFamily.InterNetwork)
+                    {
+                        return IpEntry.AddressList[i].ToString();
+                    }
+                }
+                return "";
             }
-            else if (addressList.Length == 1)
+            catch (Exception ex)
             {
-                strServerIP = addressList[0].ToString();
+                return ex.Message;
             }
-            return strServerIP;
         }
 
         public NetServer()
         {
-            Console.WriteLine("请输入本机ip");
-            while (!IPAddress.TryParse(Console.ReadLine(),out ipadr))
-            {
-                Console.WriteLine("请输入本机ip");
-            }
-            //ipadr = IPAddress.Parse( GetLocalIPAddress());
-            //Log("本机ip：" + ipadr.ToString());
+            ipadr = IPAddress.Parse( GetLocalIP());
+            Log("本机ip：" + ipadr.ToString());
         }
 
         public static void Log(string a)
