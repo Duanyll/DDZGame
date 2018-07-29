@@ -252,6 +252,12 @@ namespace GameClient
                     case "SGCR":
                         BtnSendCard.IsEnabled = false;
                         break;
+                    case "GRDY":
+                        GBStartGame.Visibility = Visibility.Visible;
+                        break;
+                    case "SGRD":
+                        GBStartGame.Visibility = Visibility.Collapsed;
+                        break;
                 }
             }));
         }
@@ -326,6 +332,12 @@ namespace GameClient
         private void BtnClear_Click(object sender, RoutedEventArgs e)
         {
             snakebar.MessageQueue.Enqueue("确实要清除记录吗？", "清除", ICChat.Items.Clear);
+        }
+
+        private void BtnStartGame_Click(object sender, RoutedEventArgs e)
+        {
+            client.SendMessage("REDY|");
+            GBStartGame.Visibility = Visibility.Collapsed;
         }
     }
 }

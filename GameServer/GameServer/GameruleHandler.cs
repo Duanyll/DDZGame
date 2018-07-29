@@ -385,6 +385,7 @@ namespace GameServer
             }
             if (LandlordSelected)
             {
+                int Landlord = now;
                 Program.Log(String.Format("{0}号玩家是地主", now));
                 server.BroadCastToAll("PLDL|" + now);
                 cards[now].AddRange(baseCard);
@@ -392,6 +393,7 @@ namespace GameServer
                 SendBaseCard();
                 Selection Last = new Selection();
                 int Owner = now;
+                int time = 1;
                 while (true)
                 {
                     AnnounceRound(now);
@@ -407,6 +409,10 @@ namespace GameServer
                         Last = selection;
                         Owner = now;
                     }
+                    if(selection.type == Selection.Type.Bomb)
+                    {
+                        time *= 2;
+                    }
                     AnnounceSelection(now, selection);
                     foreach (Card i in selection)
                     {
@@ -414,7 +420,7 @@ namespace GameServer
                     }
                     if (cards[now].Count == 0)
                     {
-                        AnnounceWinner(now);
+                        AnnounceWinner(now,Landlord,time);
                         break;
                         //server.StopService();
                         //return;
@@ -442,6 +448,7 @@ namespace GameServer
         private void AnnounceNewGame()
         {
             server.BroadCastToAll("PNAM|" + UserNames[0] + '|' + UserNames[1] + '|' + UserNames[2]);
+            server.BroadCastToAll("PSCR|" + Score[UserNames[0]] + '|' + Score[UserNames[1]] + '|' + Score[UserNames[2]]);
         }
 
         private bool SelectionOK(int now, Selection Last, int Owner, Selection selection)
@@ -463,11 +470,26 @@ namespace GameServer
             }
         }
 
-        private void AnnounceWinner(int now)
+        private void AnnounceWinner(int now,int landlord,int time)
         {
             Program.Log(string.Format("玩家{0}赢了",now));
             server.BroadCastToAll("SLOG|" + UserNames[now] + "赢了");
             server.BroadCastToAll("SMSG|" + UserNames[now] + "赢了");
+            if(now == landlord)
+            {
+                Score[UserNames[0]] -= 1*time;
+                Score[UserNames[1]] -= 1*time;
+                Score[UserNames[2]] -= 1*time;
+                Score[UserNames[now]] += 3*time;
+            }
+            else
+            {
+                Score[UserNames[0]] += 1*time;
+                Score[UserNames[1]] += 1*time;
+                Score[UserNames[2]] += 1*time;
+                Score[UserNames[landlord]] -= 3*time;
+            }
+            server.BroadCastToAll("PSCR|" + Score[UserNames[0]] + '|' + Score[UserNames[1]] + '|' + Score[UserNames[2]]);
         }
 
         private void AnnounceSelection(int now, Selection selection)
@@ -518,9 +540,9 @@ namespace GameServer
 
         private void CalculateScore()
         {
-            Program.Log("应该算分，但功能未开发");
-            server.BroadCastToAll("SLOG|算分功能未开发");
-            server.BroadCastToAll("SMSG|算分功能未开发");
+            //Program.Log("应该算分，但功能未开发");
+            //server.BroadCastToAll("SLOG|算分功能未开发");
+            //server.BroadCastToAll("SMSG|算分功能未开发");
         }
 
         const int MAX_TIME_OUT = 600;
