@@ -372,6 +372,7 @@ namespace GameServer
             bool LandlordSelected = false;
             for(int i = 1; i <= 3; i++)
             {
+                AnnounceRound(now);
                 if (AskLandlord(now))
                 {
                     LandlordSelected = true;
@@ -388,6 +389,7 @@ namespace GameServer
                 int Landlord = now;
                 Program.Log(String.Format("{0}号玩家是地主", now));
                 server.BroadCastToAll("PLDL|" + now);
+                server.BroadCastToAll("SLOG|" + now + "是地主");
                 cards[now].AddRange(baseCard);
                 cards[now].Sort();
                 SendBaseCard();
@@ -417,6 +419,16 @@ namespace GameServer
                     foreach (Card i in selection)
                     {
                         cards[now].Remove(i);
+                    }
+                    if(cards[now].Count == 2)
+                    {
+                        server.BroadCastToAll("SMSG|" + UserNames[now] + "报双了");
+                        server.BroadCastToAll("SLOG|" + UserNames[now] + "报双了");
+                    }
+                    if (cards[now].Count == 1)
+                    {
+                        server.BroadCastToAll("SMSG|" + UserNames[now] + "报单了");
+                        server.BroadCastToAll("SLOG|" + UserNames[now] + "报单了");
                     }
                     if (cards[now].Count == 0)
                     {
