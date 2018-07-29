@@ -258,6 +258,11 @@ namespace GameClient
                     case "SGRD":
                         GBStartGame.Visibility = Visibility.Collapsed;
                         break;
+                    case "PSCR":
+                        TBScore1.Text = vs[0];
+                        TBScore2.Text = vs[1];
+                        TBScore3.Text = vs[2];
+                        break;
                 }
             }));
         }

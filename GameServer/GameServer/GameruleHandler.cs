@@ -335,7 +335,7 @@ namespace GameServer
 
         public GameruleHandler()
         {
-            Program.Log("已调用GameruleHandler构造函数");
+            //Program.Log("已调用GameruleHandler构造函数");
             MainThread = new Thread(Work);
             server.UserLoggedIn += NewUser;
             server.UserLoggedOut += UserLogOut;
@@ -420,12 +420,12 @@ namespace GameServer
                     {
                         cards[now].Remove(i);
                     }
-                    if(cards[now].Count == 2)
+                    if (cards[now].Count == 2 && selection.type != Selection.Type.None)
                     {
                         server.BroadCastToAll("SMSG|" + UserNames[now] + "报双了");
                         server.BroadCastToAll("SLOG|" + UserNames[now] + "报双了");
                     }
-                    if (cards[now].Count == 1)
+                    if (cards[now].Count == 1 && selection.type != Selection.Type.None)
                     {
                         server.BroadCastToAll("SMSG|" + UserNames[now] + "报单了");
                         server.BroadCastToAll("SLOG|" + UserNames[now] + "报单了");
