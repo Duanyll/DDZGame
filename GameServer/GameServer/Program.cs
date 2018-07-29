@@ -26,6 +26,7 @@ namespace GameServer
                 Console.WriteLine("This is free software, and you are welcome to redistribute it");
                 Console.WriteLine("under certain conditions;");
 
+                Log("当前服务器版本：" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version);
                 Log("服务器程序已启动");
                 handler = new GameruleHandler();
 

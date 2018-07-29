@@ -352,9 +352,12 @@ namespace GameServer
             return true;
         }
 
+        bool Running = false;
         public void Work()
         {
             Program.Log("已开局");
+            Running = true;
+            server.BroadCastToAll("SGRD|");
             CreateCards();
             AnnounceNewGame();
             cards[0].Sort();
@@ -363,6 +366,8 @@ namespace GameServer
             SendCardList(0);
             SendCardList(1);
             SendCardList(2);
+            server.BroadCastToAll("SMSG|即将开局...");
+            Thread.Sleep(5000);
             int now = rand.Next(3);
             bool LandlordSelected = false;
             for(int i = 1; i <= 3; i++)
@@ -410,8 +415,9 @@ namespace GameServer
                     if (cards[now].Count == 0)
                     {
                         AnnounceWinner(now);
-                        server.StopService();
-                        return;
+                        break;
+                        //server.StopService();
+                        //return;
                     }
                     else
                     {
@@ -424,9 +430,13 @@ namespace GameServer
             else
             {
                 CalculateScore();
+                UserNames.Clear();
             }
             Program.Log("本局结束");
-            server.StopService();
+            Running = false;
+            UserNames.Clear();
+            server.BroadCastToAll("GRDY|");
+            //server.StopService();
         }
 
         private void AnnounceNewGame()
@@ -490,6 +500,7 @@ namespace GameServer
                 Thread.Sleep(0);
                 Thread.Sleep(100);
             }
+            server.SendTo(UserNames[now], "SGCR|");
             return new Selection("");
         }
 
@@ -593,6 +604,9 @@ namespace GameServer
         public void AbortGame()
         {
             MainThread.Abort();
+            UserNames.Clear();
+            server.BroadCastToAll("GRDY|");
+            Running = false;
             Program.Log("已强制终止主线程");
         }
 
@@ -634,16 +648,18 @@ namespace GameServer
 #endif
 
         List<string> UserNames = new List<string>();
+        List<string> AllUsers = new List<string>();
+        Dictionary<string, int> Score = new Dictionary<string, int>();
         private void NewUser(string name)
         {
-            UserNames.Add(name);
-            if (UserNames.Count >= 3 && MainThread.ThreadState != System.Threading.ThreadState.Running)
+            AllUsers.Add(name);
+            if (!Score.ContainsKey(name))
             {
-                MainThread.Start();
+                Score.Add(name, 0);
             }
-            if (UserNames.Count > 3)
+            if (!Running)
             {
-                server.SendTo(name, "SMSG|房间人数已满，您只能观战！");
+                server.SendTo(name, "GRDY|");
             }
             server.BroadCastToAll("SLOG|" + name + "进入了房间");
             server.BroadCastToAll("SMSG|" + name + "进入了房间");
@@ -651,15 +667,13 @@ namespace GameServer
 
         private void UserLogOut(string name)
         {
-            int idx = UserNames.IndexOf(name);
-            if (idx < 3)
+            if (UserNames.Contains(name))
             {
-                
                 AbortGame();
+                server.BroadCastToAll("SMSG|由于" + name + "退出了游戏，本局终止");
             }
             server.BroadCastToAll("SLOG|" + name + "已退出房间");
             server.BroadCastToAll("SMSG|" + name + "已退出房间");
-            UserNames.RemoveAt(idx);
         }
 
         string LastSelect = null;
@@ -680,6 +694,16 @@ namespace GameServer
                     break;
                 case "LDNO":
                     LastLD = false;
+                    break;
+                case "REDY":
+                    UserNames.Add(clno);
+                    server.BroadCastToAll("SLOG|" + clno + "准备好开局了");
+                    if (UserNames.Count >= 3)
+                    {
+                        MainThread.Abort();
+                        MainThread = new Thread(Work);
+                        MainThread.Start();
+                    }
                     break;
             }
         }

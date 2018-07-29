@@ -249,6 +249,9 @@ namespace GameClient
                                 break;
                         }
                         break;
+                    case "SGCR":
+                        BtnSendCard.IsEnabled = false;
+                        break;
                 }
             }));
         }
@@ -304,6 +307,25 @@ namespace GameClient
         private void BtnStop_Click(object sender, RoutedEventArgs e)
         {
             client.Stop();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            ICChat.Items.Add(new TextBlock
+            {
+                Text = "当前程序版本:" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version,
+                TextWrapping = TextWrapping.Wrap
+            });
+        }
+
+        private void ICChat_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            SVChat.ScrollToBottom();
+        }
+
+        private void BtnClear_Click(object sender, RoutedEventArgs e)
+        {
+            snakebar.MessageQueue.Enqueue("确实要清除记录吗？", "清除", ICChat.Items.Clear);
         }
     }
 }
