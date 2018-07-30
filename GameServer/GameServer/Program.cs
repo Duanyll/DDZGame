@@ -10,7 +10,7 @@ namespace GameServer
     {
         public static void Log(string a)
         {
-            Console.WriteLine(DateTime.Now + " " + a);
+            //Console.WriteLine(DateTime.Now + " " + a);
         }
 
         static GameruleHandler handler;
