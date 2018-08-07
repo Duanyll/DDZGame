@@ -473,7 +473,7 @@ namespace GameServer
             {
                 if(now == Owner)
                 {
-                    return selection.type != Selection.Type.None;
+                    return (selection.type != Selection.Type.None)&&(selection.type!=Selection.Type.Illegal);
                 }
                 else
                 {
@@ -662,9 +662,9 @@ namespace GameServer
             //Program.Log(cards[2].ToString());
             //Program.Log(baseCard.ToString());
 
-            //Program.Log("测试牌型判断");
-            //Selection a = new Selection(Console.ReadLine());
-            //Program.Log(a.type.ToString());
+            Program.Log("测试牌型判断");
+            Selection a = new Selection(Console.ReadLine());
+            Program.Log(a.type.ToString());
 
             //Program.Log("测试大小比较");
             //while (true)
@@ -677,7 +677,7 @@ namespace GameServer
             //Program.Log("测试游戏逻辑");
             //StartGame();
 
-            StartGame();
+            //StartGame();
         }
 #endif
 

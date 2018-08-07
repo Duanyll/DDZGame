@@ -62,7 +62,8 @@ namespace NetServer
 
         public NetServer()
         {
-            ipadr = IPAddress.Parse( GetLocalIP());
+            //ipadr = IPAddress.Parse( GetLocalIP());
+            ipadr = IPAddress.Any;
             Log("本机ip：" + ipadr.ToString());
         }
 
