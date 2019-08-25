@@ -62,7 +62,7 @@
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MaterialDesignColors, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
@@ -143,7 +143,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="GameClient_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -154,13 +153,19 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\GameServer\GameServer\GameServer.csproj">
+      <Project>{36adaf64-320d-40d2-bd14-e0f82725bfde}</Project>
+      <Name>GameServer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NetClient\NetClient.csproj">
       <Project>{4e1d4f94-72a9-4d93-9de0-d2303262e3fa}</Project>
       <Name>NetClient</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icon1.ico" />
+    <Resource Include="Icon1.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">

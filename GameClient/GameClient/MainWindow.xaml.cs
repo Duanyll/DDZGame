@@ -215,7 +215,7 @@ namespace GameClient
                         });
                         break;
                     case "QLDL":
-                        if(MessageBox.Show("你想要地主吗", UserName, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                        if(MessageBox.Show("你想叫地主吗", UserName, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                         {
                             client.SendMessage("LDOK|");
                         }
@@ -270,6 +270,10 @@ namespace GameClient
         private void Window_Closed(object sender, EventArgs e)
         {
             client.Stop();
+            if (handler != null && handler.IsRunning)
+            {
+                handler.StopAll();
+            }
         }
 
         private void LVCardOwn_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -343,6 +347,24 @@ namespace GameClient
         {
             client.SendMessage("REDY|");
             GBStartGame.Visibility = Visibility.Collapsed;
+        }
+
+        GameServer.GameruleHandler handler;
+        private void BtnNewGame_Click(object sender, RoutedEventArgs e)
+        {
+            if (handler == null)
+            {
+                handler = new GameServer.GameruleHandler();
+            }
+            if (handler.IsRunning)
+            {
+                snakebar.MessageQueue.Enqueue("服务器已在运行");
+            }
+            else
+            {
+                handler.StartGame();
+                snakebar.MessageQueue.Enqueue("服务器已在运行");
+            }
         }
     }
 }

@@ -92,8 +92,8 @@
                             </TextBlock>
                             <TextBox x:Name="TBUserName" Grid.Column="0" Grid.Row="1" materialDesign:HintAssist.Hint="用户名" Text="" />
                             <TextBox x:Name="TBServerIP" Grid.Column="0" Grid.Row="2" materialDesign:HintAssist.Hint="服务器IP地址" Text="" />
-                            <Button x:Name="BtnConnect" Content="连接" HorizontalAlignment="Right" VerticalAlignment="Bottom" Style="{StaticResource MaterialDesignRaisedButton}" Grid.Row="3" Click="BtnConnect_Click"></Button>
-                            <Button x:Name="BtnStop" Content="断开连接" HorizontalAlignment="Left" VerticalAlignment="Bottom" Style="{StaticResource MaterialDesignFlatButton}" Grid.Row="3" Click="BtnStop_Click"></Button>
+                            <Button x:Name="BtnConnect" Content="加入游戏" HorizontalAlignment="Right" VerticalAlignment="Bottom" Style="{StaticResource MaterialDesignRaisedButton}" Grid.Row="3" Click="BtnConnect_Click"></Button>
+                            <Button x:Name="BtnNewGame" Content="新游戏" HorizontalAlignment="Left" VerticalAlignment="Bottom" Style="{StaticResource MaterialDesignFlatButton}" Grid.Row="3" Click="BtnNewGame_Click"></Button>
                         </Grid>
                     </materialDesign:PopupBox>
                     <TextBlock x:Name="TBCountDown" HorizontalAlignment="Left" Margin="4" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="36"/>

@@ -9,9 +9,9 @@ using NetServer;
 
 namespace GameServer
 {
-    class GameruleHandler
+    public class GameruleHandler
     {
-        private struct Card:IComparable
+        private struct Card : IComparable
         {
             public const int COLOR_CNT = 5;
             public const int VALUE_CNT = 14;
@@ -53,7 +53,7 @@ namespace GameServer
                 ret += val;
                 return ret;
             }
-            public Card(char col,char val)
+            public Card(char col, char val)
             {
                 color = (Color)(col - 'A');
                 if ((int)color > COLOR_CNT)
@@ -66,32 +66,32 @@ namespace GameServer
                     throw new ArgumentOutOfRangeException();
                 }
             }
-            public Card(Color a,Value b)
+            public Card(Color a, Value b)
             {
                 color = a;
                 value = b;
             }
-            public static bool operator ==(Card A,Card B)
+            public static bool operator ==(Card A, Card B)
             {
                 return A.Equals(B);
             }
-            public static bool operator !=(Card A,Card B)
+            public static bool operator !=(Card A, Card B)
             {
                 return !(A == B);
             }
-            public static bool operator <(Card A,Card B)
+            public static bool operator <(Card A, Card B)
             {
                 return A.value < B.value;
             }
-            public static bool operator >(Card A,Card B)
+            public static bool operator >(Card A, Card B)
             {
                 return A.value > B.value;
             }
-            public static bool operator >=(Card A,Card B)
+            public static bool operator >=(Card A, Card B)
             {
                 return !(A < B);
             }
-            public static bool operator <=(Card A,Card B)
+            public static bool operator <=(Card A, Card B)
             {
                 return !(A > B);
             }
@@ -126,7 +126,8 @@ namespace GameServer
             public Card.Value value;
             public int Length;
 
-            public Type type {
+            public Type type
+            {
                 get
                 {
                     if (_type != Type.Null)
@@ -135,18 +136,18 @@ namespace GameServer
                     }
                     else
                     {
-                        if(Count == 0)      //判断是否什么都没选
+                        if (Count == 0)      //判断是否什么都没选
                         {
                             _type = Type.None;
                             return Type.None;
                         }
-                        if(Count == 1)      //判断是否单牌
+                        if (Count == 1)      //判断是否单牌
                         {
                             _type = Type.Single;
                             value = this[0].value;
                             return Type.Single;
                         }
-                        if(Count == 2)    
+                        if (Count == 2)
                         {
                             if (this[0].value == this[1].value)//判断是否对子
                             {
@@ -177,13 +178,13 @@ namespace GameServer
                                 return Type.ThreeWithOne;
                             }
                         }
-                        if(Count >= 5)//判断顺子
+                        if (Count >= 5)//判断顺子
                         {
                             Sort();
                             bool OK = true;
-                            for(int i = 1; i < Count; i++)
+                            for (int i = 1; i < Count; i++)
                             {
-                                if (this[i - 1].value != this[i].value - 1 || this[i].value > Card.Value.A) 
+                                if (this[i - 1].value != this[i].value - 1 || this[i].value > Card.Value.A)
                                 {
                                     OK = false;
                                     break;
@@ -201,9 +202,9 @@ namespace GameServer
                         {
                             Sort();
                             bool OK = true;
-                            for(int i = 0; i < Count; i += 2)
+                            for (int i = 0; i < Count; i += 2)
                             {
-                                if(this[i].value > Card.Value.A)
+                                if (this[i].value > Card.Value.A)
                                 {
                                     OK = false;
                                     break;
@@ -235,7 +236,7 @@ namespace GameServer
                             //Sort();(之前肯定排过了）
                             int cnt = 1;
                             //找出333444之类的结构
-                            for(int i = 1; i < Count; i++)
+                            for (int i = 1; i < Count; i++)
                             {
                                 if (cnt == 3)
                                 {
@@ -264,7 +265,7 @@ namespace GameServer
                                     }
                                 }
                             }
-                            if(cnt == 6)
+                            if (cnt == 6)
                             {
                                 _type = Type.Plane;
                                 value = this[2].value;
@@ -286,9 +287,9 @@ namespace GameServer
             {
                 if (a.Length % 2 != 0)
                 {
-                    throw new FormatException();                                            
+                    throw new FormatException();
                 }
-                for(int i = 0; i < a.Length; i += 2)
+                for (int i = 0; i < a.Length; i += 2)
                 {
                     Add(new Card(a[i], a[i + 1]));
                 }
@@ -297,7 +298,7 @@ namespace GameServer
             public override string ToString()
             {
                 string ans = "";
-                foreach(Card i in this)
+                foreach (Card i in this)
                 {
                     ans += i.ToString();
                 }
@@ -306,19 +307,19 @@ namespace GameServer
 
             public bool CanMatch(Selection Last)
             {
-                if (type == Type.None||Last.type == Type.None)
+                if (type == Type.None || Last.type == Type.None)
                 {
                     return true;
                 }
-                if (type == Type.Illegal||type == Type.Null)
+                if (type == Type.Illegal || type == Type.Null)
                 {
                     return false;
                 }
-                if(type == Type.Bomb && Last.type != Type.Bomb)
+                if (type == Type.Bomb && Last.type != Type.Bomb)
                 {
                     return true;
                 }
-                if (!(type == Type.Line)||(type == Type.Chair)&&type == Last.type)
+                if (!(type == Type.Line) || (type == Type.Chair) && type == Last.type)
                 {
                     return value > Last.value;
                 }
@@ -326,7 +327,7 @@ namespace GameServer
             }
         }
 
-        const int CARDS_PER_PERSON = 17; 
+        const int CARDS_PER_PERSON = 17;
 
         Selection[] cards;
         Selection baseCard;
@@ -342,7 +343,7 @@ namespace GameServer
             server.MessageRecieved += RecvMsg;
         }
 
-        bool IsSubSet(Selection a,Selection b)
+        bool IsSubSet(Selection a, Selection b)
         {
             foreach (var i in a)
             {
@@ -370,7 +371,7 @@ namespace GameServer
             Thread.Sleep(5000);
             int now = rand.Next(3);
             bool LandlordSelected = false;
-            for(int i = 1; i <= 3; i++)
+            for (int i = 1; i <= 3; i++)
             {
                 AnnounceRound(now);
                 if (AskLandlord(now))
@@ -411,7 +412,7 @@ namespace GameServer
                         Last = selection;
                         Owner = now;
                     }
-                    if(selection.type == Selection.Type.Bomb)
+                    if (selection.type == Selection.Type.Bomb)
                     {
                         time *= 2;
                     }
@@ -432,7 +433,7 @@ namespace GameServer
                     }
                     if (cards[now].Count == 0)
                     {
-                        AnnounceWinner(now,Landlord,time);
+                        AnnounceWinner(now, Landlord, time);
                         break;
                         //server.StopService();
                         //return;
@@ -447,7 +448,6 @@ namespace GameServer
             }
             else
             {
-                CalculateScore();
                 UserNames.Clear();
             }
             Program.Log("本局结束");
@@ -471,9 +471,9 @@ namespace GameServer
             }
             else
             {
-                if(now == Owner)
+                if (now == Owner)
                 {
-                    return (selection.type != Selection.Type.None)&&(selection.type!=Selection.Type.Illegal);
+                    return (selection.type != Selection.Type.None) && (selection.type != Selection.Type.Illegal);
                 }
                 else
                 {
@@ -482,38 +482,38 @@ namespace GameServer
             }
         }
 
-        private void AnnounceWinner(int now,int landlord,int time)
+        private void AnnounceWinner(int now, int landlord, int time)
         {
-            Program.Log(string.Format("玩家{0}赢了",now));
+            Program.Log(string.Format("玩家{0}赢了", now));
             server.BroadCastToAll("SLOG|" + UserNames[now] + "赢了");
             server.BroadCastToAll("SMSG|" + UserNames[now] + "赢了");
-            if(now == landlord)
+            if (now == landlord)
             {
-                Score[UserNames[0]] -= 1*time;
-                Score[UserNames[1]] -= 1*time;
-                Score[UserNames[2]] -= 1*time;
-                Score[UserNames[now]] += 3*time;
+                Score[UserNames[0]] -= 1 * time;
+                Score[UserNames[1]] -= 1 * time;
+                Score[UserNames[2]] -= 1 * time;
+                Score[UserNames[now]] += 3 * time;
             }
             else
             {
-                Score[UserNames[0]] += 1*time;
-                Score[UserNames[1]] += 1*time;
-                Score[UserNames[2]] += 1*time;
-                Score[UserNames[landlord]] -= 3*time;
+                Score[UserNames[0]] += 1 * time;
+                Score[UserNames[1]] += 1 * time;
+                Score[UserNames[2]] += 1 * time;
+                Score[UserNames[landlord]] -= 3 * time;
             }
             server.BroadCastToAll("PSCR|" + Score[UserNames[0]] + '|' + Score[UserNames[1]] + '|' + Score[UserNames[2]]);
         }
 
         private void AnnounceSelection(int now, Selection selection)
         {
-            Program.Log(string.Format("玩家{0}的出牌是:",now) + selection.ToString());
+            Program.Log(string.Format("玩家{0}的出牌是:", now) + selection.ToString());
             server.BroadCastToAll("CLST|" + UserNames[now] + ':' + selection.ToString());
         }
 
         private void TellSelectionFail(int now)
         {
-            Program.Log(string.Format("玩家{0}的出牌无效",now));
-            server.SendTo(UserNames[now],"SMSG|出牌无效");
+            Program.Log(string.Format("玩家{0}的出牌无效", now));
+            server.SendTo(UserNames[now], "SMSG|出牌无效");
         }
 
         private Selection GetSelection(int now)
@@ -550,17 +550,10 @@ namespace GameServer
             server.BroadCastToAll("CBAS|" + baseCard.ToString());
         }
 
-        private void CalculateScore()
-        {
-            //Program.Log("应该算分，但功能未开发");
-            //server.BroadCastToAll("SLOG|算分功能未开发");
-            //server.BroadCastToAll("SMSG|算分功能未开发");
-        }
-
         const int MAX_TIME_OUT = 600;
         private bool AskLandlord(int now)
         {
-            Program.Log(string.Format("询问玩家{0}是否成为地主",now));
+            Program.Log(string.Format("询问玩家{0}是否成为地主", now));
             //return System.Windows.Forms.MessageBox.Show("是否成为地主？", "提示", System.Windows.Forms.MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes;
             LastLD = null;
             server.SendTo(UserNames[now], "QLDL|");
@@ -593,9 +586,9 @@ namespace GameServer
             }
             baseCard = new Selection();
             Selection Full = new Selection();
-            for(Card.Color i = Card.Color.Hongtao; i <= Card.Color.Meihua; i++)
+            for (Card.Color i = Card.Color.Hongtao; i <= Card.Color.Meihua; i++)
             {
-                for(Card.Value j = Card.Value.Three; j <= Card.Value.Two; j++)
+                for (Card.Value j = Card.Value.Three; j <= Card.Value.Two; j++)
                 {
                     Full.Add(new Card(i, j));
                 }
@@ -626,6 +619,7 @@ namespace GameServer
             }
         }
 
+        public bool IsRunning { get; private set; }
         Thread MainThread;
         public void StartGame()
         {
@@ -633,6 +627,7 @@ namespace GameServer
             MainThread = new Thread(Work);
             server.StartService();
             Program.Log("已启动主线程");
+            IsRunning = true;
         }
 
         public void AbortGame()
@@ -641,6 +636,7 @@ namespace GameServer
             UserNames.Clear();
             server.BroadCastToAll("GRDY|");
             Running = false;
+            IsRunning = false;
             Program.Log("已强制终止主线程");
         }
 
@@ -712,7 +708,7 @@ namespace GameServer
 
         string LastSelect = null;
         bool? LastLD = null;
-        private void RecvMsg(string clno,string msg)
+        private void RecvMsg(string clno, string msg)
         {
             string[] vs = msg.Split('|');
             switch (vs[0])
